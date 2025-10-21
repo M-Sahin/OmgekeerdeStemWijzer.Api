@@ -2,7 +2,7 @@ namespace OmgekeerdeStemWijzer.Api.Models;
 // /Models/PoliticalChunk.cs
 public class PoliticalChunk
 {
-    // ID voor ChromaDB (bv. "vvd_chunk_12")
+    // ID voor ChromaDB
     public required string Id { get; set; }
 
     // De tekst zelf

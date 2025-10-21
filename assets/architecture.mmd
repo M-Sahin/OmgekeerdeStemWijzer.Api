@@ -1,0 +1,9 @@
+flowchart LR
+  Client["Client / Frontend\n(browser / CLI / tests)"] --> API["ASP.NET Core Web API\n(Controllers)"]
+  API --> Vector["Vector Store\n(Chroma / In-Memory)"]
+  API --> Services["Services Layer\n(Ingestion, Embedding, DocumentProcessor, VectorStore)"]
+  Services --> Ollama["Ollama (Model Server)\nvia HTTP or OllamaSharp"]
+  Services --> Vector
+  style API fill:#eef,stroke:#333,stroke-width:1px
+  style Ollama fill:#efe,stroke:#333,stroke-width:1px
+  style Vector fill:#fee,stroke:#333,stroke-width:1px
