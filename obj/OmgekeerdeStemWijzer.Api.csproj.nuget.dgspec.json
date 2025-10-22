@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj": {}
+    "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj": {
+    "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
+        "projectUniqueName": "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
         "projectName": "OmgekeerdeStemWijzer.Api",
-        "projectPath": "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
+        "projectPath": "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
         "packagesPath": "C:\\Users\\Msahi\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\obj\\",
+        "outputPath": "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Msahi\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -50,6 +50,14 @@
               "target": "Package",
               "version": "[9.0.9, )"
             },
+            "Microsoft.Extensions.Http.Polly": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.Options.DataAnnotations": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
             "OllamaSharp": {
               "target": "Package",
               "version": "[5.4.8, )"
@@ -61,6 +69,18 @@
             "PdfPig": {
               "target": "Package",
               "version": "[0.1.11, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

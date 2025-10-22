@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OmgekeerdeStemWijzer.Api.Services;
+using OmgekeerdeStemWijzer.Api.Models;
 using System.Threading.Tasks;
 
 [ApiController]
@@ -26,12 +27,14 @@ public class MatchingController : ControllerBase
     /// <param name="userQuery">De politieke stelling van de gebruiker (bijv. "Ik wil lagere belastingen").</param>
     /// <returns>Het geanalyseerde antwoord van de LLM inclusief bronnen.</returns>
     [HttpPost("match")]
-    public async Task<IActionResult> GetMatch([FromBody] string userQuery)
+    public async Task<IActionResult> GetMatch([FromBody] MatchingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(userQuery))
+        if (request?.messages == null || request.messages.Length == 0 || string.IsNullOrWhiteSpace(request.messages[0].content))
         {
             return BadRequest("De gebruikersvraag mag niet leeg zijn.");
         }
+
+        var userQuery = request.messages[0].content!;
 
         // STAP 1: Vraag embedding op voor de gebruikersquery
         // De front-end verstuurt de query als een geserialiseerde string, vandaar de [FromBody] string userQuery
@@ -69,10 +72,18 @@ public class MatchingController : ControllerBase
         string llmResponse;
         try
         {
-            llmResponse = await _groqService.QueryAsync(systemPrompt, userMessage);
+            // Sanitize optional model override: ignore placeholders like "string" or empty values
+            var modelOverride = string.IsNullOrWhiteSpace(request.model) ||
+                                string.Equals(request.model?.Trim(), "string", StringComparison.OrdinalIgnoreCase)
+                                ? null
+                                : request.model?.Trim();
+
+            // Use model override if provided; otherwise the GroqService default model is used.
+            llmResponse = await _groqService.QueryAsync(systemPrompt, userMessage, modelOverride);
             if (string.IsNullOrWhiteSpace(llmResponse))
             {
-                return StatusCode(502, "LLM returned no content. Controleer Groq API en logbestanden.");
+                var extra = string.IsNullOrWhiteSpace(_groqService.LastError) ? string.Empty : $" Details: {_groqService.LastError}";
+                return StatusCode(502, $"LLM returned no content. Controleer Groq API en logbestanden.{extra}");
             }
         }
         catch
@@ -88,4 +99,15 @@ public class MatchingController : ControllerBase
             retrievedSources = relevantChunks
         });
     }
+}
+
+public class MatchingRequest
+{
+    public Message[] messages { get; set; } = System.Array.Empty<Message>();
+    public string? model { get; set; }
+}
+
+public class Message
+{
+    public string content { get; set; } = string.Empty;
 }

@@ -37,18 +37,21 @@ static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         .OrResult(msg => (int)msg.StatusCode == 429)
         .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-    => HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+// Circuit breaker removed for Groq client to avoid blocking application after provider-side 500s.
+// If you want a circuit breaker, scope it narrowly (e.g., only 429), or shorten break duration.
+//static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+//    => HttpPolicyExtensions
+//        .HandleTransientHttpError()
+//        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
 
 builder.Services.AddHttpClient("groq", client =>
 {
-    client.BaseAddress = new Uri(groqBaseUrl);
+    // Ensure trailing slash so relative paths append after /v1/
+    var baseUrl = groqBaseUrl.EndsWith('/') ? groqBaseUrl : groqBaseUrl + "/";
+    client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
 })
-    .AddPolicyHandler(GetRetryPolicy())
-    .AddPolicyHandler(GetCircuitBreakerPolicy());
+    .AddPolicyHandler(GetRetryPolicy());
 
 builder.Services.AddSingleton(sp =>
 {

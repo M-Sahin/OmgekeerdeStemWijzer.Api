@@ -129,9 +129,61 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
         public Task<QueryResult> QueryAsync(float[][] queryEmbeddings, int nResults)
         {
-            var resultsPerQuery = queryEmbeddings.Select(q => _documents.Take(nResults).Select(d => d.Content)).ToList();
+            // Compute cosine similarity for each query embedding against all stored docs, then take top-N by score
+            var resultsPerQuery = new List<IEnumerable<string>>();
+
+            foreach (var q in queryEmbeddings)
+            {
+                if (q == null || q.Length == 0)
+                {
+                    // Fallback: return first N if query is invalid
+                    resultsPerQuery.Add(_documents.Take(nResults).Select(d => d.Content));
+                    continue;
+                }
+
+                var scored = new List<(double Score, string Content)>();
+                foreach (var d in _documents)
+                {
+                    if (d.Embedding == null || d.Embedding.Length != q.Length)
+                        continue;
+
+                    var score = CosineSimilarity(q, d.Embedding);
+                    scored.Add((score, d.Content));
+                }
+
+                // If no valid embeddings matched, fallback to first N
+                if (scored.Count == 0)
+                {
+                    resultsPerQuery.Add(_documents.Take(nResults).Select(d => d.Content));
+                }
+                else
+                {
+                    var top = scored
+                        .OrderByDescending(s => s.Score)
+                        .Take(nResults)
+                        .Select(s => s.Content)
+                        .ToList();
+                    resultsPerQuery.Add(top);
+                }
+            }
+
             var result = new QueryResult { Documents = resultsPerQuery };
             return Task.FromResult(result);
+        }
+
+        private static double CosineSimilarity(float[] a, float[] b)
+        {
+            double dot = 0, na = 0, nb = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                double va = a[i];
+                double vb = b[i];
+                dot += va * vb;
+                na += va * va;
+                nb += vb * vb;
+            }
+            if (na == 0 || nb == 0) return 0;
+            return dot / (Math.Sqrt(na) * Math.Sqrt(nb));
         }
 
         private class StoredDocument
