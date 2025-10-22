@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wZdBmnpJwd8=",
+  "dgSpecHash": "4bbGlUFJqe4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
+  "projectFilePath": "c:\\Users\\Msahi\\OneDrive\\Documenten\\OmgekeerdeStemWijzer\\OmgekeerdeStemWijzer.Api\\OmgekeerdeStemWijzer.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Msahi\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
     "C:\\Users\\Msahi\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\9.10.0\\microsoft.extensions.ai.abstractions.9.10.0.nupkg.sha512",
