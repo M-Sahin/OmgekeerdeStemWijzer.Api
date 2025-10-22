@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 var builder = WebApplication.CreateBuilder(args);
 
 // === 1. Configuratie Ophalen ===
-var groqApiKey = builder.Configuration.GetSection("Groq:ApiKey").Value ?? throw new InvalidOperationException("Groq:ApiKey is niet geconfigureerd.");
+var groqApiKey = builder.Configuration.GetSection("Groq:ApiKey").Value ?? string.Empty;
+var groqBaseUrl = builder.Configuration.GetSection("Groq:BaseUrl").Value ?? "https://api.groq.com/openai/v1";
+var groqModel = builder.Configuration.GetSection("Groq:Model").Value ?? "groq/compound";
 var ollamaUrl = builder.Configuration.GetSection("ServiceUrls:Ollama").Value ?? "http://localhost:11434";
 var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value ?? "http://localhost:8000";
 
@@ -14,10 +16,23 @@ var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value
 
 // Voeg de services toe voor Dependency Injection
 
-// Groq Service
-builder.Services.AddSingleton(new GroqService(groqApiKey));
+// Groq Service: register using IHttpClientFactory so the service receives an HttpClient
+// Register a named HttpClient for Groq with the configured base URL
+builder.Services.AddHttpClient("groq", client =>
+{
+    client.BaseAddress = new Uri(groqBaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(60);
+});
 
-// Ollama Embedding Service (optimized implementation renamed to EmbeddingService)
+builder.Services.AddSingleton<OmgekeerdeStemWijzer.Api.Services.GroqService>(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    var httpClient = factory.CreateClient("groq");
+    var logger = sp.GetRequiredService<ILogger<OmgekeerdeStemWijzer.Api.Services.GroqService>>();
+    return new OmgekeerdeStemWijzer.Api.Services.GroqService(httpClient, groqApiKey, logger, groqModel);
+});
+
+// Ollama Embedding Service
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<EmbeddingService>(sp =>
 {
@@ -54,8 +69,6 @@ using (var scope = app.Services.CreateScope())
     await vectorSvc.InitializeAsync(); 
 }
 
-// === 3. Middleware Pijplijn ===
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -69,24 +82,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-namespace OmgekeerdeStemWijzer.Api.Services
-{
-    // Minimal GroqService implementation to satisfy DI registration.
-    // Expand this with real API calls as needed.
-    public class GroqService
-    {
-        private readonly string _apiKey;
-
-        public GroqService(string apiKey)
-        {
-            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
-        }
-
-        public Task<string> QueryAsync(string query)
-        {
-            // Placeholder implementation; replace with actual HTTP call to Groq API.
-            return Task.FromResult(string.Empty);
-        }
-    }
-}

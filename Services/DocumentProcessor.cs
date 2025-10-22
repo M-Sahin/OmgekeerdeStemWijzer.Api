@@ -54,8 +54,7 @@ public class DocumentProcessor
 
                     chunkIndex++;
                 }
-
-                // Ga naar het volgende startpunt, rekening houdend met overlapping
+                // Verplaats de startindex voor de volgende chunk met overlap
                 startWordIndex += (ChunkSize - ChunkOverlap);
 
                 // Voorkom een oneindige loop als de stapgrootte 0 is

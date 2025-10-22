@@ -68,9 +68,6 @@ public class VectorStoreService
     }
 }
 
-// Minimal local implementations to avoid needing an external Chroma SDK
-// These are simple in-memory stubs that allow the project to compile
-// and can be replaced with a real SDK integration later.
 public class ChromaClient
 {
     private readonly string _url;
@@ -128,7 +125,6 @@ internal class InMemoryChromaCollection : IChromaCollection
 
     public Task<QueryResult> QueryAsync(float[][] queryEmbeddings, int nResults)
     {
-        // Simple naive implementation: for each query embedding return up to nResults stored documents (by insertion order)
         var resultsPerQuery = queryEmbeddings.Select(q => _documents.Take(nResults).Select(d => d.Content)).ToList();
         var result = new QueryResult { Documents = resultsPerQuery };
         return Task.FromResult(result);

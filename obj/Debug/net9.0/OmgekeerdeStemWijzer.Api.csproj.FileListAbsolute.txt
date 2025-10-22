@@ -46,3 +46,4 @@ c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\assets\groq-models.json

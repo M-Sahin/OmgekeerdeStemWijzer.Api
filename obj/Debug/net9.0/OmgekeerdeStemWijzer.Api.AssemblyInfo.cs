@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OmgekeerdeStemWijzer.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b749823789ee37e115f0784b6156e6e08622e24b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09be6b7f2cba0b88edc508e62fd07de5eed88797")]
 [assembly: System.Reflection.AssemblyProductAttribute("OmgekeerdeStemWijzer.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OmgekeerdeStemWijzer.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

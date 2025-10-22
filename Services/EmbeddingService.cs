@@ -11,10 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace OmgekeerdeStemWijzer.Api.Services
 {
-    /// <summary>
-    /// Optimized version of EmbeddingService with caching, better resource management,
-    /// and performance improvements. This version is 3-5x faster for repeated calls.
-    /// </summary>
+
     public class EmbeddingService : IDisposable
     {
         private readonly object? _ollamaClient;
