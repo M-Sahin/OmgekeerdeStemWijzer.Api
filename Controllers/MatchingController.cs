@@ -43,7 +43,7 @@ public class MatchingController : ControllerBase
         if (queryEmbedding.Length == 0)
         {
             // Foutafhandeling voor de front-end (index.html)
-            return StatusCode(503, "Kon geen embedding genereren. Controleer Ollama service.");
+            return StatusCode(503, "Kon geen embedding genereren. Controleer OpenAI API service.");
         }
 
         // STAP 2: Zoek relevante chunks in ChromaDB (Retrieval)

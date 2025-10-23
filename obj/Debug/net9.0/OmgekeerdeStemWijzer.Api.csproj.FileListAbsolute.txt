@@ -16,9 +16,7 @@ c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\OmgekeerdeStemWijzer.Api.dll
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\OmgekeerdeStemWijzer.Api.pdb
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
-c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Microsoft.Extensions.AI.Abstractions.dll
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Microsoft.OpenApi.dll
-c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\OllamaSharp.dll
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\OpenAI.dll
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\UglyToad.PdfPig.Core.dll
 c:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\UglyToad.PdfPig.DocumentLayoutAnalysis.dll

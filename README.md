@@ -6,7 +6,7 @@ Het is simpel, robuust en gemaakt om mee te experimenteren:
 
 - Importeer PDF's vanaf `Data/Manifesten/`.
 - Verdeel de tekst in hapklare `PoliticalChunk`s.
-- Genereer embeddings met een lokale Ollama-modelserver (of via `OllamaSharp` als die beschikbaar is).
+- Genereer embeddings met OpenAI's text-embedding-3-small model via de OpenAI API.
 - Sla vectoren op in een in-memory Chroma-achtige collectie voor snelle experimenten.
 
 Waarom ik dit maakte:
@@ -16,7 +16,10 @@ Waarom ik dit maakte:
 Snelle start (development)
 
 1. Zorg dat .NET 9 geïnstalleerd is.
-2. Stel de Ollama-server-URL in `appsettings.json` onder `Ollama:Url` (of via een omgevingsvariabele).
+2. Stel je OpenAI API key in via user secrets of `appsettings.json` onder `OpenAI:ApiKey`:
+   ```powershell
+   dotnet user-secrets set "OpenAI:ApiKey" "sk-your-api-key-here"
+   ```
 3. Plaats PDF's in `Data/Manifesten/`.
 4. Vanuit de projectroot voer je uit:
 
@@ -32,8 +35,13 @@ curl -X POST http://localhost:5000/api/ingestion/start-indexing
 ```
 
 Notities & tips
-- De `EmbeddingService` probeert eerst de `OllamaSharp` client via reflection te gebruiken voor compatibiliteit met meerdere versies. Als dat niet lukt, doet hij een HTTP POST naar je Ollama-server en probeert een aantal endpoint-vormen, en cachet de werkende endpoint.
-- 
+- De `EmbeddingService` gebruikt de OpenAI .NET SDK om embeddings te genereren met het `text-embedding-3-small` model.
+- Je kunt het embedding model aanpassen in `appsettings.json` onder `OpenAI:EmbeddingModel`.
+ 
 ## Geheimen en API-keys
 
-Het project verwacht een Groq API key in de configuratie als je die gebruikt. Je moet deze lokaal of in CI veilig instellen.
+Het project verwacht de volgende API keys in de configuratie:
+- **OpenAI API Key** voor embeddings (verplicht)
+- **Groq API Key** voor LLM responses (indien gebruikt)
+
+Bewaar deze veilig via user secrets of omgevingsvariabelen, niet in de repository.

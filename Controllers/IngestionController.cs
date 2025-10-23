@@ -72,7 +72,7 @@ public class IngestionController : ControllerBase
                 }
                 catch (Exception ex)
                 {
-                    // Belangrijk om fouten op te vangen als Ollama/ChromaDB even niet reageert
+                    // Belangrijk om fouten op te vangen als OpenAI/ChromaDB even niet reageert
                     _logger.LogError(ex, "Fout bij verwerken chunk {Id} voor partij {Party}", chunk.Id, partyName);
                 }
             }

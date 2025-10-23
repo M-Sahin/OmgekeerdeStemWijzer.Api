@@ -17,11 +17,18 @@ builder.Services.AddOptions<GroqOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddOptions<OpenAIOptions>()
+    .Bind(builder.Configuration.GetSection("OpenAI"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 var groqOptions = builder.Configuration.GetSection("Groq").Get<GroqOptions>() ?? new GroqOptions();
 var groqApiKey = groqOptions.ApiKey ?? string.Empty;
 var groqBaseUrl = groqOptions.BaseUrl ?? "https://api.groq.com/openai/v1";
 var groqModel = groqOptions.Model ?? "groq/compound";
-var ollamaUrl = builder.Configuration.GetSection("ServiceUrls:Ollama").Value ?? "http://localhost:11434";
+var openAIOptions = builder.Configuration.GetSection("OpenAI").Get<OpenAIOptions>() ?? new OpenAIOptions();
+var openAIApiKey = openAIOptions.ApiKey ?? string.Empty;
+var openAIEmbeddingModel = openAIOptions.EmbeddingModel ?? "text-embedding-3-small";
 var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value ?? "http://localhost:8000";
 
 // === 2. Services Toevoegen ===
@@ -67,14 +74,17 @@ builder.Services.AddSingleton(sp =>
     return new OmgekeerdeStemWijzer.Api.Services.GroqService(httpClient, groqApiKey, logger, groqModel);
 });
 
-// Ollama Embedding Service
-builder.Services.AddHttpClient();
+// OpenAI Embedding Service
 builder.Services.AddScoped<EmbeddingService>(sp =>
 {
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
-    var httpClient = factory.CreateClient();
     var logger = sp.GetRequiredService<ILogger<EmbeddingService>>();
-    return new EmbeddingService(ollamaUrl, httpClient, logger);
+    
+    if (string.IsNullOrEmpty(openAIApiKey))
+    {
+        throw new InvalidOperationException("OpenAI API key is not configured (check appsettings or user secrets).");
+    }
+    
+    return new EmbeddingService(openAIApiKey, openAIEmbeddingModel, logger);
 });
 
 // ChromaDB Vector Store Service

@@ -11,7 +11,6 @@
           "Microsoft.AspNetCore.OpenApi": "9.0.9",
           "Microsoft.Extensions.Http.Polly": "9.0.10",
           "Microsoft.Extensions.Options.DataAnnotations": "9.0.10",
-          "OllamaSharp": "5.4.8",
           "OpenAI": "2.5.0",
           "PdfPig": "0.1.11",
           "Serilog.AspNetCore": "8.0.0",
@@ -31,14 +30,6 @@
           "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
             "assemblyVersion": "9.0.9.0",
             "fileVersion": "9.0.925.42003"
-          }
-        }
-      },
-      "Microsoft.Extensions.AI.Abstractions/9.10.0": {
-        "runtime": {
-          "lib/net9.0/Microsoft.Extensions.AI.Abstractions.dll": {
-            "assemblyVersion": "9.10.0.0",
-            "fileVersion": "9.1000.25.51303"
           }
         }
       },
@@ -252,17 +243,6 @@
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
             "assemblyVersion": "1.6.25.0",
             "fileVersion": "1.6.25.0"
-          }
-        }
-      },
-      "OllamaSharp/5.4.8": {
-        "dependencies": {
-          "Microsoft.Extensions.AI.Abstractions": "9.10.0"
-        },
-        "runtime": {
-          "lib/net9.0/OllamaSharp.dll": {
-            "assemblyVersion": "5.4.8.0",
-            "fileVersion": "5.4.8.0"
           }
         }
       },
@@ -519,13 +499,6 @@
       "path": "microsoft.aspnetcore.openapi/9.0.9",
       "hashPath": "microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512"
     },
-    "Microsoft.Extensions.AI.Abstractions/9.10.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-oBdh3TDNN+F28L2ZKOF1NfobJF3BbKWrpta+HI9dz8OcwIiIkFGvP8n1GNPO92upNQ9gofMX1O+MXtopW6tR1A==",
-      "path": "microsoft.extensions.ai.abstractions/9.10.0",
-      "hashPath": "microsoft.extensions.ai.abstractions.9.10.0.nupkg.sha512"
-    },
     "Microsoft.Extensions.ApiDescription.Server/9.0.0": {
       "type": "package",
       "serviceable": true,
@@ -665,13 +638,6 @@
       "sha512": "sha512-ZahSqNGtNV7N0JBYS/IYXPkLVexL/AZFxo6pqxv6A7Uli7Q7zfitNjkaqIcsV73Ukzxi4IlJdyDgcQiMXiH8cw==",
       "path": "microsoft.openapi/1.6.25",
       "hashPath": "microsoft.openapi.1.6.25.nupkg.sha512"
-    },
-    "OllamaSharp/5.4.8": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-5hW16lUaNGT+27aWlEPRh9VsX9b9cmLHkVJ4jUGVqpSFFSn6up5PJW3dJkvx7uJi1JUV8+IAj7aSp5NV55CIYg==",
-      "path": "ollamasharp/5.4.8",
-      "hashPath": "ollamasharp.5.4.8.nupkg.sha512"
     },
     "OpenAI/2.5.0": {
       "type": "package",

@@ -58,10 +58,6 @@
               "target": "Package",
               "version": "[9.0.10, )"
             },
-            "OllamaSharp": {
-              "target": "Package",
-              "version": "[5.4.8, )"
-            },
             "OpenAI": {
               "target": "Package",
               "version": "[2.5.0, )"

@@ -21,19 +21,6 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "Microsoft.Extensions.AI.Abstractions/9.10.0": {
-        "type": "package",
-        "compile": {
-          "lib/net9.0/Microsoft.Extensions.AI.Abstractions.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net9.0/Microsoft.Extensions.AI.Abstractions.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "Microsoft.Extensions.ApiDescription.Server/9.0.0": {
         "type": "package",
         "build": {
@@ -412,22 +399,6 @@
         "runtime": {
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "OllamaSharp/5.4.8": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.AI.Abstractions": "9.10.0"
-        },
-        "compile": {
-          "lib/net9.0/OllamaSharp.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net9.0/OllamaSharp.dll": {
-            "related": ".xml"
           }
         }
       },
@@ -842,27 +813,6 @@
         "lib/net9.0/Microsoft.AspNetCore.OpenApi.xml",
         "microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
         "microsoft.aspnetcore.openapi.nuspec"
-      ]
-    },
-    "Microsoft.Extensions.AI.Abstractions/9.10.0": {
-      "sha512": "oBdh3TDNN+F28L2ZKOF1NfobJF3BbKWrpta+HI9dz8OcwIiIkFGvP8n1GNPO92upNQ9gofMX1O+MXtopW6tR1A==",
-      "type": "package",
-      "path": "microsoft.extensions.ai.abstractions/9.10.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "README.md",
-        "lib/net462/Microsoft.Extensions.AI.Abstractions.dll",
-        "lib/net462/Microsoft.Extensions.AI.Abstractions.xml",
-        "lib/net8.0/Microsoft.Extensions.AI.Abstractions.dll",
-        "lib/net8.0/Microsoft.Extensions.AI.Abstractions.xml",
-        "lib/net9.0/Microsoft.Extensions.AI.Abstractions.dll",
-        "lib/net9.0/Microsoft.Extensions.AI.Abstractions.xml",
-        "lib/netstandard2.0/Microsoft.Extensions.AI.Abstractions.dll",
-        "lib/netstandard2.0/Microsoft.Extensions.AI.Abstractions.xml",
-        "microsoft.extensions.ai.abstractions.9.10.0.nupkg.sha512",
-        "microsoft.extensions.ai.abstractions.nuspec"
       ]
     },
     "Microsoft.Extensions.ApiDescription.Server/9.0.0": {
@@ -1711,29 +1661,6 @@
         "microsoft.openapi.nuspec"
       ]
     },
-    "OllamaSharp/5.4.8": {
-      "sha512": "5hW16lUaNGT+27aWlEPRh9VsX9b9cmLHkVJ4jUGVqpSFFSn6up5PJW3dJkvx7uJi1JUV8+IAj7aSp5NV55CIYg==",
-      "type": "package",
-      "path": "ollamasharp/5.4.8",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "Ollama.png",
-        "README.md",
-        "analyzers/dotnet/cs/OllamaSharp.SourceGenerators.dll",
-        "lib/net8.0/OllamaSharp.dll",
-        "lib/net8.0/OllamaSharp.xml",
-        "lib/net9.0/OllamaSharp.dll",
-        "lib/net9.0/OllamaSharp.xml",
-        "lib/netstandard2.0/OllamaSharp.dll",
-        "lib/netstandard2.0/OllamaSharp.xml",
-        "lib/netstandard2.1/OllamaSharp.dll",
-        "lib/netstandard2.1/OllamaSharp.xml",
-        "ollamasharp.5.4.8.nupkg.sha512",
-        "ollamasharp.nuspec"
-      ]
-    },
     "OpenAI/2.5.0": {
       "sha512": "DADdrU3XcqwcRfANPl+mmrIROoPZ8m4bQMoLSLq7Ao+eaRr3HdTki+h6NUiJOewb9KpQ8zV3ujXUZIQjIGH7aQ==",
       "type": "package",
@@ -2355,7 +2282,6 @@
       "Microsoft.AspNetCore.OpenApi >= 9.0.9",
       "Microsoft.Extensions.Http.Polly >= 9.0.10",
       "Microsoft.Extensions.Options.DataAnnotations >= 9.0.10",
-      "OllamaSharp >= 5.4.8",
       "OpenAI >= 2.5.0",
       "PdfPig >= 0.1.11",
       "Serilog.AspNetCore >= 8.0.0",
@@ -2420,10 +2346,6 @@
           "Microsoft.Extensions.Options.DataAnnotations": {
             "target": "Package",
             "version": "[9.0.10, )"
-          },
-          "OllamaSharp": {
-            "target": "Package",
-            "version": "[5.4.8, )"
           },
           "OpenAI": {
             "target": "Package",
