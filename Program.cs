@@ -23,10 +23,12 @@ builder.Services.AddOptions<OpenAIOptions>()
 var groqOptions = builder.Configuration.GetSection("Groq").Get<GroqOptions>() ?? new GroqOptions();
 var groqApiKey = groqOptions.ApiKey ?? string.Empty;
 var groqBaseUrl = groqOptions.BaseUrl ?? "https://api.groq.com/openai/v1";
-var groqModel = groqOptions.Model ?? "groq/compound";
+// If the configured model is empty or whitespace, fall back to a sane default (llama-3.1-8b-instant)
+var groqModel = string.IsNullOrWhiteSpace(groqOptions.Model) ? "llama-3.1-8b-instant" : groqOptions.Model;
 var openAIOptions = builder.Configuration.GetSection("OpenAI").Get<OpenAIOptions>() ?? new OpenAIOptions();
 var openAIApiKey = openAIOptions.ApiKey ?? string.Empty;
-var openAIEmbeddingModel = openAIOptions.EmbeddingModel ?? "text-embedding-3-small";
+// Treat empty/whitespace embedding model as missing and use the recommended default
+var openAIEmbeddingModel = string.IsNullOrWhiteSpace(openAIOptions.EmbeddingModel) ? "text-embedding-3-small" : openAIOptions.EmbeddingModel;
 var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value ?? "http://localhost:8000";
 
 static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -100,7 +102,10 @@ app.MapHealthChecks("/ready");
 
 app.UseCors();
 
-if (app.Environment.IsDevelopment())
+// Enable Swagger in Development, or in Production when explicitly allowed via configuration.
+// Set configuration key `Swagger:EnableInProduction=true` (or env var `Swagger__EnableInProduction=true`) to enable in prod.
+var enableSwaggerInProd = builder.Configuration.GetSection("Swagger").GetValue<bool>("EnableInProduction", false);
+if (app.Environment.IsDevelopment() || enableSwaggerInProd)
 {
     app.UseSwagger();
     app.UseSwaggerUI();

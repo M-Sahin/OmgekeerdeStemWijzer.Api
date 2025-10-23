@@ -73,3 +73,13 @@ C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Serilog.Sinks.Debug.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Serilog.Sinks.File.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\appsettings.Production.json
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\BBB.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\CDA.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\CU.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\D66.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\GL_PVDA.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\NSC.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\PVDD.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\PVV.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\SP.pdf
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Data\Manifesten\VVD.pdf
