@@ -10,3 +10,8 @@ TestResults/
 _ReSharper*/
 coverage/
 .idea/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
