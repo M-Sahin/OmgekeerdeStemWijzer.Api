@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// === 1. Configuratie Ophalen ===
-// Bind typed options and validate on start
 builder.Services.AddOptions<GroqOptions>()
     .Bind(builder.Configuration.GetSection("Groq"))
     .ValidateDataAnnotations()
@@ -31,29 +29,14 @@ var openAIApiKey = openAIOptions.ApiKey ?? string.Empty;
 var openAIEmbeddingModel = openAIOptions.EmbeddingModel ?? "text-embedding-3-small";
 var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value ?? "http://localhost:8000";
 
-// === 2. Services Toevoegen ===
-
-// Voeg de services toe voor Dependency Injection
-
-// Groq Service: register using IHttpClientFactory so the service receives a named HttpClient
-// Register a named HttpClient for Groq with the configured base URL
-// Polly policies
 static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     => HttpPolicyExtensions
         .HandleTransientHttpError()
         .OrResult(msg => (int)msg.StatusCode == 429)
         .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-// Circuit breaker removed for Groq client to avoid blocking application after provider-side 500s.
-// If you want a circuit breaker, scope it narrowly (e.g., only 429), or shorten break duration.
-//static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-//    => HttpPolicyExtensions
-//        .HandleTransientHttpError()
-//        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
-
 builder.Services.AddHttpClient("groq", client =>
 {
-    // Ensure trailing slash so relative paths append after /v1/
     var baseUrl = groqBaseUrl.EndsWith('/') ? groqBaseUrl : groqBaseUrl + "/";
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
@@ -74,7 +57,6 @@ builder.Services.AddSingleton(sp =>
     return new OmgekeerdeStemWijzer.Api.Services.GroqService(httpClient, groqApiKey, logger, groqModel);
 });
 
-// OpenAI Embedding Service
 builder.Services.AddScoped<EmbeddingService>(sp =>
 {
     var logger = sp.GetRequiredService<ILogger<EmbeddingService>>();
@@ -87,23 +69,27 @@ builder.Services.AddScoped<EmbeddingService>(sp =>
     return new EmbeddingService(openAIApiKey, openAIEmbeddingModel, logger);
 });
 
-// ChromaDB Vector Store Service
 builder.Services.AddSingleton(provider => new VectorStoreService(chromaDbUrl));
 
-// Hosted initializer to run async startup tasks (instead of blocking .Wait())
 builder.Services.AddHostedService<StartupInitializer>();
 
-// Health checks
 builder.Services.AddHealthChecks()
     .AddCheck<VectorStoreHealthCheck>("vectorstore");
 
-// Document Processor Service (vereist geen URL, is pure logica)
 builder.Services.AddSingleton<DocumentProcessor>();
 
-// Voeg Controllers toe
 builder.Services.AddControllers();
 
-// Voeg de vereiste Swagger/OpenAPI functionaliteit toe
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -111,6 +97,8 @@ var app = builder.Build();
 
 app.MapHealthChecks("/health");
 app.MapHealthChecks("/ready");
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {

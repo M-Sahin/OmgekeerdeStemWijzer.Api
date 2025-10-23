@@ -89,11 +89,16 @@ Prefer to store secrets (API keys) in user secrets or environment variables rath
 - API calls include timeout configuration and error messages for debugging.
 - Vector store operations are resilient for local dev; consider using an external persistent store for production.
 
-## Extension points / TODOs
-- Add batching/parallel embedding calls to speed up ingestion.
-- Consider using OpenAI's batch API for cost optimization on large datasets.
-- Add unit/integration tests for embedding API calls and vector-store queries.
-- Secure configuration using user secrets / environment variables.
+## Completed Features
+- ✅ User secrets and environment variables for secure configuration
+- ✅ Error handling and retry policies with Polly
+- ✅ Health checks for all external dependencies
+- ✅ Docker containerization with ChromaDB persistence
+
+## Future Enhancements (Optional)
+- Add batching/parallel embedding calls for faster ingestion
+- Consider OpenAI batch API for cost optimization on large datasets
+- Add comprehensive unit/integration test coverage
 
 ## Files of interest
 

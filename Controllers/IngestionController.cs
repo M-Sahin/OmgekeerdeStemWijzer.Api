@@ -46,33 +46,27 @@ public class IngestionController : ControllerBase
 
         int totalChunks = 0;
         
-        // Loop door elk bestand
         foreach (var filePath in pdfFiles)
         {
             var partyName = Path.GetFileNameWithoutExtension(filePath);
             _logger.LogInformation("Start verwerking van manifest: {Party}", partyName);
 
-            // 1. CHUNK de tekst
             var chunks = _processor.ProcessPdf(filePath, partyName);
 
-            // 2. EMBED en ADD naar ChromaDB
             foreach (var chunk in chunks)
             {
                 try
                 {
-                    // Genereer de vector (dit is de zware stap)
                     float[] embedding = await _embedder.GenerateEmbeddingAsync(chunk.Content);
                     
                     if (embedding.Length > 0)
                     {
-                        // Sla de vector + chunk op in ChromaDB
                         await _vectorStore.AddChunkAsync(chunk, embedding);
                         totalChunks++;
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Belangrijk om fouten op te vangen als OpenAI/ChromaDB even niet reageert
                     _logger.LogError(ex, "Fout bij verwerken chunk {Id} voor partij {Party}", chunk.Id, partyName);
                 }
             }

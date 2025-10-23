@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using OmgekeerdeStemWijzer.Api.Services;
 using OmgekeerdeStemWijzer.Api.Models;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -36,27 +38,20 @@ public class MatchingController : ControllerBase
 
         var userQuery = request.messages[0].content!;
 
-        // STAP 1: Vraag embedding op voor de gebruikersquery
-        // De front-end verstuurt de query als een geserialiseerde string, vandaar de [FromBody] string userQuery
         float[] queryEmbedding = await _embeddingService.GenerateEmbeddingAsync(userQuery);
 
         if (queryEmbedding.Length == 0)
         {
-            // Foutafhandeling voor de front-end (index.html)
             return StatusCode(503, "Kon geen embedding genereren. Controleer OpenAI API service.");
         }
 
-        // STAP 2: Zoek relevante chunks in ChromaDB (Retrieval)
         string[] relevantChunks = await _vectorStoreService.QueryRelevantChunksAsync(queryEmbedding, nResults: 5);
 
         if (relevantChunks.Length == 0)
         {
-            // Dit kan gebeuren als ChromaDB leeg is of de query te vaag is.
             return NotFound("Kon geen relevante manifestfragmenten vinden in de database. Zorg ervoor dat de IngestionController is uitgevoerd.");
         }
 
-        // STAP 3: Genereer het antwoord (Augmentation/Generation)
-        // De chunks worden toegevoegd als context aan de prompt.
         string context = string.Join("\n\n--- Bron ---\n\n", relevantChunks);
         
         string systemPrompt = $@"Je bent een 'Omgekeerde Stemwijzer' analist. Je taak is om de stelling van de gebruiker (User Query) te analyseren en deze te matchen met de meegeleverde manifestfragmenten (Context).
@@ -72,13 +67,11 @@ public class MatchingController : ControllerBase
         string llmResponse;
         try
         {
-            // Sanitize optional model override: ignore placeholders like "string" or empty values
             var modelOverride = string.IsNullOrWhiteSpace(request.model) ||
                                 string.Equals(request.model?.Trim(), "string", StringComparison.OrdinalIgnoreCase)
                                 ? null
                                 : request.model?.Trim();
 
-            // Use model override if provided; otherwise the GroqService default model is used.
             llmResponse = await _groqService.QueryAsync(systemPrompt, userMessage, modelOverride);
             if (string.IsNullOrWhiteSpace(llmResponse))
             {
@@ -91,7 +84,6 @@ public class MatchingController : ControllerBase
             return StatusCode(502, "Er is een fout opgetreden tijdens het aanroepen van de LLM (Groq).");
         }
 
-        // STAP 4: Geef het resultaat terug aan de front-end
         return Ok(new 
         { 
             UserQuery = userQuery,
@@ -103,11 +95,16 @@ public class MatchingController : ControllerBase
 
 public class MatchingRequest
 {
+    [Required]
     public Message[] messages { get; set; } = System.Array.Empty<Message>();
-    public string? model { get; set; }
+    
+    [DefaultValue("llama-3.1-8b-instant")]
+    public string? model { get; set; } = "llama-3.1-8b-instant";
 }
 
 public class Message
 {
+    [Required]
+    [DefaultValue("Ik wil lagere belastingen")]
     public string content { get; set; } = string.Empty;
 }

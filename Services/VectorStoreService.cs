@@ -21,9 +21,8 @@ namespace OmgekeerdeStemWijzer.Api.Services
         /// </summary>
         public async Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default)
         {
-            // Allow cancellation and pass token to underlying client when available
             _collection = await _chroma.GetOrCreateCollectionAsync(CollectionName);
-            await Task.CompletedTask; // placeholder for potential async initialization using the token
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -67,7 +66,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 nResults: nResults
             );
             
-            // We geven alleen de tekst (documenten) terug
             return results.Documents.FirstOrDefault()?.ToArray() ?? System.Array.Empty<string>();
         }
     }
@@ -96,7 +94,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
     public class QueryResult
     {
-        // Outer enumerable corresponds to each query embedding; inner enumerable is the list of documents returned for that query
         public IEnumerable<IEnumerable<string>> Documents { get; set; } = Enumerable.Empty<IEnumerable<string>>();
     }
 
@@ -129,14 +126,12 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
         public Task<QueryResult> QueryAsync(float[][] queryEmbeddings, int nResults)
         {
-            // Compute cosine similarity for each query embedding against all stored docs, then take top-N by score
             var resultsPerQuery = new List<IEnumerable<string>>();
 
             foreach (var q in queryEmbeddings)
             {
                 if (q == null || q.Length == 0)
                 {
-                    // Fallback: return first N if query is invalid
                     resultsPerQuery.Add(_documents.Take(nResults).Select(d => d.Content));
                     continue;
                 }
@@ -151,7 +146,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
                     scored.Add((score, d.Content));
                 }
 
-                // If no valid embeddings matched, fallback to first N
                 if (scored.Count == 0)
                 {
                     resultsPerQuery.Add(_documents.Take(nResults).Select(d => d.Content));

@@ -20,24 +20,22 @@ namespace OmgekeerdeStemWijzer.Api.Services
     private readonly string _defaultModel;
     public string? LastError { get; private set; }
 
-        public GroqService(HttpClient httpClient, string apiKey, ILogger<GroqService>? logger = null, string defaultModel = "groq/compound")
+        public GroqService(HttpClient httpClient, string apiKey, ILogger<GroqService>? logger = null, string defaultModel = "llama-3.1-8b-instant")
         {
             _http = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
             _logger = logger;
-            _defaultModel = defaultModel ?? "groq/compound";
+            _defaultModel = defaultModel ?? "llama-3.1-8b-instant";
         }
 
         public async Task<string> QueryAsync(string systemPrompt, string userMessage, string? model = null, bool allowFallback = true)
         {
             var modelToUse = model ?? _defaultModel;
 
-            // First attempt with the requested/default model
             var first = await SendOnceAsync(systemPrompt, userMessage, modelToUse);
             if (first.Ok)
                 return first.Content;
 
-            // Try simple fallbacks if allowed and we saw an error
             if (allowFallback && !string.IsNullOrWhiteSpace(LastError))
             {
                 var errLower = LastError.ToLowerInvariant();
@@ -45,7 +43,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 var looksLikeCompound = modelToUse.StartsWith("groq/compound", StringComparison.OrdinalIgnoreCase);
                 if (mightBeServerIssue || looksLikeCompound)
                 {
-                    var fallbacks = new[] { "groq/compound-mini", "llama-3.1-8b-instant", "llama-3.3-70b-versatile" };
+                    var fallbacks = new[] { "groq/compound-mini", "llama-3.3-70b-versatile" };
                     foreach (var fb in fallbacks)
                     {
                         if (string.Equals(fb, modelToUse, StringComparison.OrdinalIgnoreCase))
@@ -67,8 +65,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
         private async Task<(bool Ok, string Content)> SendOnceAsync(string systemPrompt, string userMessage, string modelToUse)
         {
-            // Build the correct endpoint. If BaseAddress is set (recommended), use a relative path so it appends to e.g. https://api.groq.com/openai/v1/
-            // If not, fall back to an absolute URL.
             var relativePath = new Uri("chat/completions", UriKind.Relative);
             var absoluteFallback = new Uri("https://api.groq.com/openai/v1/chat/completions", UriKind.Absolute);
             var requestUri = _http.BaseAddress != null ? relativePath : absoluteFallback;
@@ -107,7 +103,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 using var stream = await resp.Content.ReadAsStreamAsync();
                 var doc = await JsonSerializer.DeserializeAsync<JsonElement>(stream);
 
-                // Try to extract first choice text (OpenAI-compatible shape)
                 if (doc.ValueKind == JsonValueKind.Object && doc.TryGetProperty("choices", out var choices) && choices.ValueKind == JsonValueKind.Array && choices.GetArrayLength() > 0)
                 {
                     var first = choices[0];
@@ -161,7 +156,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
             }
             catch
             {
-                // ignore parse errors
             }
             return body;
         }

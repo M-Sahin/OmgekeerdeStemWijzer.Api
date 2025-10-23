@@ -53,8 +53,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
         public void Dispose()
         {
-            // EmbeddingClient doesn't require explicit disposal in current SDK version
-            // This method is kept for interface compatibility
         }
     }
 }

@@ -72,3 +72,4 @@ C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Serilog.Sinks.Console.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Serilog.Sinks.Debug.dll
 C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\Serilog.Sinks.File.dll
+C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api\bin\Debug\net9.0\appsettings.Production.json

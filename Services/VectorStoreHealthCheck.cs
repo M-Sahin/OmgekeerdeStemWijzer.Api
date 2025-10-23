@@ -17,7 +17,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
         {
             try
             {
-                // A simple check: ensure InitializeAsync can complete (no exception)
                 await _vectorStore.InitializeAsync(cancellationToken);
                 return HealthCheckResult.Healthy("Vector store initialized");
             }
