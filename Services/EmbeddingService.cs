@@ -18,10 +18,12 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 throw new ArgumentException("OpenAI API key cannot be null or empty.", nameof(apiKey));
             }
 
-            _modelName = modelName;
+            // Ensure we never pass an empty or whitespace model name to the OpenAI client.
+            // Config sources (env vars) may accidentally set an empty string which the
+            // OpenAI API rejects with HTTP 400 "you must provide a model parameter".
+            _modelName = string.IsNullOrWhiteSpace(modelName) ? "text-embedding-3-small" : modelName;
             _logger = logger;
             _client = new EmbeddingClient(_modelName, apiKey);
-            
             _logger?.LogInformation("Initialized OpenAI EmbeddingService with model: {Model}", _modelName);
         }
 
@@ -46,7 +48,8 @@ namespace OmgekeerdeStemWijzer.Api.Services
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Failed to generate embedding using OpenAI API");
+                // Include the model name in logs to make misconfiguration obvious.
+                _logger?.LogError(ex, "Failed to generate embedding using OpenAI API (model: {Model})", _modelName);
                 throw;
             }
         }
