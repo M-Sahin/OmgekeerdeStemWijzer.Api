@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
+using OmgekeerdeStemWijzer.Api.Models;
 
 namespace OmgekeerdeStemWijzer.Api.Services
 {
@@ -9,22 +11,27 @@ namespace OmgekeerdeStemWijzer.Api.Services
     {
         private readonly EmbeddingClient _client;
         private readonly string _modelName;
-        private readonly ILogger<EmbeddingService>? _logger;
+        private readonly ILogger<EmbeddingService> _logger;
 
-        public EmbeddingService(string apiKey, string modelName = "text-embedding-3-small", ILogger<EmbeddingService>? logger = null)
+        public EmbeddingService(IOptions<OpenAIOptions> options, ILogger<EmbeddingService> logger)
         {
-            if (string.IsNullOrWhiteSpace(apiKey))
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(logger);
+            
+            var openAIOptions = options.Value;
+            
+            if (string.IsNullOrWhiteSpace(openAIOptions.ApiKey))
             {
-                throw new ArgumentException("OpenAI API key cannot be null or empty.", nameof(apiKey));
+                throw new ArgumentException("OpenAI API key cannot be null or empty.", nameof(openAIOptions.ApiKey));
             }
 
-            // Ensure we never pass an empty or whitespace model name to the OpenAI client.
-            // Config sources (env vars) may accidentally set an empty string which the
-            // OpenAI API rejects with HTTP 400 "you must provide a model parameter".
-            _modelName = string.IsNullOrWhiteSpace(modelName) ? "text-embedding-3-small" : modelName;
+            _modelName = string.IsNullOrWhiteSpace(openAIOptions.EmbeddingModel) 
+                ? "text-embedding-3-small" 
+                : openAIOptions.EmbeddingModel;
+            
             _logger = logger;
-            _client = new EmbeddingClient(_modelName, apiKey);
-            _logger?.LogInformation("Initialized OpenAI EmbeddingService with model: {Model}", _modelName);
+            _client = new EmbeddingClient(_modelName, openAIOptions.ApiKey);
+            _logger.LogInformation("Initialized OpenAI EmbeddingService with model: {Model}", _modelName);
         }
 
         public async Task<float[]> GenerateEmbeddingAsync(string text)
@@ -33,23 +40,23 @@ namespace OmgekeerdeStemWijzer.Api.Services
             {
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    _logger?.LogWarning("Attempted to generate embedding for empty or null text");
+                    _logger.LogWarning("Attempted to generate embedding for empty or null text");
                     return Array.Empty<float>();
                 }
 
-                _logger?.LogDebug("GenerateEmbeddingAsync: generating embedding for text length {Len}", text.Length);
+                _logger.LogDebug("GenerateEmbeddingAsync: generating embedding for text length {Len}", text.Length);
                 
                 var embedding = await _client.GenerateEmbeddingAsync(text);
                 var vector = embedding.Value.ToFloats().ToArray();
                 
-                _logger?.LogDebug("Successfully generated embedding with dimension {Dim}", vector.Length);
+                _logger.LogDebug("Successfully generated embedding with dimension {Dim}", vector.Length);
                 
                 return vector;
             }
             catch (Exception ex)
             {
                 // Include the model name in logs to make misconfiguration obvious.
-                _logger?.LogError(ex, "Failed to generate embedding using OpenAI API (model: {Model})", _modelName);
+                _logger.LogError(ex, "Failed to generate embedding using OpenAI API (model: {Model})", _modelName);
                 throw;
             }
         }

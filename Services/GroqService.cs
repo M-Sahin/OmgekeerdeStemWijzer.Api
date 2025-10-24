@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using OmgekeerdeStemWijzer.Api.Models;
 
 namespace OmgekeerdeStemWijzer.Api.Services
 {
@@ -16,16 +18,31 @@ namespace OmgekeerdeStemWijzer.Api.Services
     {
         private readonly HttpClient _http;
         private readonly string _apiKey;
-    private readonly ILogger<GroqService>? _logger;
-    private readonly string _defaultModel;
-    public string? LastError { get; private set; }
+        private readonly ILogger<GroqService>? _logger;
+        private readonly string _defaultModel;
+        public string? LastError { get; private set; }
 
-        public GroqService(HttpClient httpClient, string apiKey, ILogger<GroqService>? logger = null, string defaultModel = "llama-3.1-8b-instant")
+        public GroqService(HttpClient httpClient, IOptions<GroqOptions> options, ILogger<GroqService>? logger = null)
         {
             _http = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+            
+            var groqOptions = options?.Value ?? throw new ArgumentNullException(nameof(options));
+            
+            if (string.IsNullOrWhiteSpace(groqOptions.ApiKey))
+            {
+                throw new ArgumentException("Groq API key cannot be null or empty.", nameof(groqOptions.ApiKey));
+            }
+
+            _apiKey = groqOptions.ApiKey;
             _logger = logger;
-            _defaultModel = defaultModel ?? "llama-3.1-8b-instant";
+            
+            // Ensure we never pass an empty or whitespace model name.
+            // Config sources may accidentally set an empty string which causes API errors.
+            _defaultModel = string.IsNullOrWhiteSpace(groqOptions.Model) 
+                ? "llama-3.1-8b-instant" 
+                : groqOptions.Model;
+            
+            _logger?.LogInformation("Initialized GroqService with default model: {Model}", _defaultModel);
         }
 
         public async Task<string> QueryAsync(string systemPrompt, string userMessage, string? model = null, bool allowFallback = true)

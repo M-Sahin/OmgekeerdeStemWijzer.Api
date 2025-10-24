@@ -1,0 +1,20 @@
+2025-10-24 20:44:16.755 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-24 20:44:17.013 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-24 20:44:17.016 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-24 20:44:17.017 +02:00 [INF] Hosting environment: Development
+2025-10-24 20:44:17.018 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-24 20:44:20.118 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/index.html - null null
+2025-10-24 20:44:20.227 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/index.html - 200 null text/html;charset=utf-8 112.0729ms
+2025-10-24 20:44:20.301 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - null null
+2025-10-24 20:44:20.378 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 77.0895ms
+2025-10-24 20:44:29.475 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/Ingestion/start-indexing - null 0
+2025-10-24 20:44:29.481 +02:00 [INF] CORS policy execution successful.
+2025-10-24 20:44:29.485 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-24 20:44:29.488 +02:00 [INF] Executing endpoint 'OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api)'
+2025-10-24 20:44:29.504 +02:00 [INF] Route matched with {action = "StartIndexing", controller = "Ingestion"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] StartIndexing() on controller OmgekeerdeStemWijzer.Api.Controllers.IngestionController (OmgekeerdeStemWijzer.Api).
+2025-10-24 20:44:29.514 +02:00 [INF] Initialized OpenAI EmbeddingService with model: text-embedding-3-small
+2025-10-24 20:44:29.517 +02:00 [INF] Start verwerking van manifest: BBB
+2025-10-24 20:44:52.409 +02:00 [INF] Application is shutting down...
+2025-10-24 20:45:20.280 +02:00 [INF] Voltooide verwerking voor BBB. 162 chunks toegevoegd.
+2025-10-24 20:45:20.281 +02:00 [INF] Start verwerking van manifest: CDA
+2025-10-24 20:45:23.425 +02:00 [INF] Application shut down gracefully
