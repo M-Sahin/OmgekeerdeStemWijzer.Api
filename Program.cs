@@ -89,7 +89,8 @@ var safeChromaApiKey = chromaApiKey.Replace("\r", string.Empty).Replace("\n", st
 var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "Authorization";
 var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyScheme") ?? "Bearer";
 
-builder.Services.AddHttpClient("chroma", client =>
+// Configure a typed HttpClient for IChromaClient so ChromaHttpClient always receives the correctly configured instance.
+var chromaClientBuilder = builder.Services.AddHttpClient<IChromaClient, ChromaHttpClient>(client =>
 {
     var baseUrl = chromaDbUrl.EndsWith('/') ? chromaDbUrl : chromaDbUrl + "/";
 
@@ -102,7 +103,6 @@ builder.Services.AddHttpClient("chroma", client =>
 
     if (!string.IsNullOrWhiteSpace(safeChromaApiKey))
     {
-        // If header name is Authorization, use the typed Authorization header with a scheme
         if (string.Equals(chromaApiKeyHeader, "Authorization", StringComparison.OrdinalIgnoreCase))
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(chromaApiKeyScheme, safeChromaApiKey);
@@ -113,13 +113,6 @@ builder.Services.AddHttpClient("chroma", client =>
             client.DefaultRequestHeaders.Add(chromaApiKeyHeader, safeChromaApiKey);
         }
     }
-});
-
-builder.Services.AddSingleton<IChromaClient>(sp =>
-{
-    var factory = sp.GetRequiredService<IHttpClientFactory>();
-    var client = factory.CreateClient("chroma");
-    return new ChromaHttpClient(client);
 });
 
 builder.Services.AddSingleton<VectorStoreService>();
