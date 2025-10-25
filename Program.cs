@@ -48,6 +48,9 @@ var groqBaseUrl = groqOptions.BaseUrl ?? "https://api.groq.com/openai/v1";
 var groqModel = string.IsNullOrWhiteSpace(groqOptions.Model) ? "llama-3.1-8b-instant" : groqOptions.Model;
 var openAIOptions = builder.Configuration.GetSection("OpenAI").Get<OpenAIOptions>() ?? new OpenAIOptions();
 var openAIApiKey = openAIOptions.ApiKey ?? string.Empty;
+// sanitize API key values - remove whitespace and any new-line characters which are invalid in headers
+openAIApiKey = openAIApiKey.Trim();
+var safeOpenAIApiKey = openAIApiKey.Replace("\r", string.Empty).Replace("\n", string.Empty);
 // Treat empty/whitespace embedding model as missing and use the recommended default
 var openAIEmbeddingModel = string.IsNullOrWhiteSpace(openAIOptions.EmbeddingModel) ? "text-embedding-3-small" : openAIOptions.EmbeddingModel;
 var chromaDbUrl = builder.Configuration.GetSection("ServiceUrls:ChromaDb").Value ?? "http://localhost:8000";
@@ -73,14 +76,16 @@ builder.Services.AddHttpClient("openai", client =>
 {
     client.BaseAddress = new Uri("https://api.openai.com/");
     client.Timeout = TimeSpan.FromSeconds(60);
-    if (!string.IsNullOrWhiteSpace(openAIApiKey))
+    if (!string.IsNullOrWhiteSpace(safeOpenAIApiKey))
     {
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAIApiKey);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", safeOpenAIApiKey);
     }
 });
 
 var chromaApiKey = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKey")
     ?? Environment.GetEnvironmentVariable("Chroma__ApiKey");
+chromaApiKey = (chromaApiKey ?? string.Empty).Trim();
+var safeChromaApiKey = chromaApiKey.Replace("\r", string.Empty).Replace("\n", string.Empty);
 var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "Authorization";
 var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyScheme") ?? "Bearer";
 
@@ -90,17 +95,17 @@ builder.Services.AddHttpClient("chroma", client =>
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
 
-    if (!string.IsNullOrWhiteSpace(chromaApiKey))
+    if (!string.IsNullOrWhiteSpace(safeChromaApiKey))
     {
         // If header name is Authorization, use the typed Authorization header with a scheme
         if (string.Equals(chromaApiKeyHeader, "Authorization", StringComparison.OrdinalIgnoreCase))
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(chromaApiKeyScheme, chromaApiKey);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(chromaApiKeyScheme, safeChromaApiKey);
         }
         else
         {
             client.DefaultRequestHeaders.Remove(chromaApiKeyHeader);
-            client.DefaultRequestHeaders.Add(chromaApiKeyHeader, chromaApiKey);
+            client.DefaultRequestHeaders.Add(chromaApiKeyHeader, safeChromaApiKey);
         }
     }
 });
