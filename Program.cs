@@ -92,6 +92,11 @@ var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<str
 builder.Services.AddHttpClient("chroma", client =>
 {
     var baseUrl = chromaDbUrl.EndsWith('/') ? chromaDbUrl : chromaDbUrl + "/";
+
+    if (baseUrl.IndexOf("api/v1", StringComparison.OrdinalIgnoreCase) < 0)
+    {
+        baseUrl = baseUrl + "api/v1/";
+    }
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
 
