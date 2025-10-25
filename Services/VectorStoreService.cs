@@ -137,7 +137,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 };
 
                 // Modern Chroma uses /upsert to insert or update documents
-                var resp = await _http.PostAsJsonAsync($"collections/{_name}/upsert", payload);
+                var resp = await _http.PutAsJsonAsync($"collections/{_name}/upsert", payload);
                 resp.EnsureSuccessStatusCode();
             }
 
