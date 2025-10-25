@@ -94,21 +94,8 @@ var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<str
 var chromaClientBuilder = builder.Services.AddHttpClient<IChromaClient, ChromaHttpClient>(client =>
 {
     var baseUrl = chromaDbUrl.EndsWith('/') ? chromaDbUrl : chromaDbUrl + "/";
-
-    // Align with Chroma v2 OpenAPI: ensure base points to /api/v2/
-    var hasV2 = baseUrl.IndexOf("api/v2", StringComparison.OrdinalIgnoreCase) >= 0;
-    var hasV1 = baseUrl.IndexOf("api/v1", StringComparison.OrdinalIgnoreCase) >= 0;
-    if (!hasV2)
-    {
-        // strip v1 if present, then append v2
-        if (hasV1)
-        {
-            baseUrl = baseUrl.Replace("api/v1/", string.Empty, StringComparison.OrdinalIgnoreCase)
-                             .Replace("api/v1", string.Empty, StringComparison.OrdinalIgnoreCase);
-            if (!baseUrl.EndsWith('/')) baseUrl += "/";
-        }
-        baseUrl = baseUrl + "api/v2/";
-    }
+    // Keep it simple: always target v2 under the provided base URL
+    baseUrl = baseUrl + "api/v2/";
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
 
