@@ -8,6 +8,7 @@ using Polly.Extensions.Http;
 using Serilog;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 // Configure Serilog before building the app
@@ -68,7 +69,40 @@ builder.Services.AddHttpClient<GroqService>("groq", (sp, client) =>
 
 builder.Services.AddScoped<EmbeddingService>();
 
-builder.Services.AddSingleton(provider => new VectorStoreService(chromaDbUrl));
+var chromaApiKey = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKey")
+    ?? Environment.GetEnvironmentVariable("Chroma__ApiKey");
+var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "Authorization";
+var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyScheme") ?? "Bearer";
+
+builder.Services.AddHttpClient("chroma", client =>
+{
+    var baseUrl = chromaDbUrl.EndsWith('/') ? chromaDbUrl : chromaDbUrl + "/";
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(60);
+
+    if (!string.IsNullOrWhiteSpace(chromaApiKey))
+    {
+        // If header name is Authorization, use the typed Authorization header with a scheme
+        if (string.Equals(chromaApiKeyHeader, "Authorization", StringComparison.OrdinalIgnoreCase))
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(chromaApiKeyScheme, chromaApiKey);
+        }
+        else
+        {
+            client.DefaultRequestHeaders.Remove(chromaApiKeyHeader);
+            client.DefaultRequestHeaders.Add(chromaApiKeyHeader, chromaApiKey);
+        }
+    }
+});
+
+builder.Services.AddSingleton<IChromaClient>(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    var client = factory.CreateClient("chroma");
+    return new ChromaHttpClient(client);
+});
+
+builder.Services.AddSingleton<VectorStoreService>();
 
 builder.Services.AddHostedService<StartupInitializer>();
 

@@ -7,13 +7,14 @@ namespace OmgekeerdeStemWijzer.Api.Services
 {
     public class VectorStoreService
     {
-        private readonly ChromaClient _chroma;
+        private readonly IChromaClient _chroma;
         private IChromaCollection? _collection;
         private const string CollectionName = "verkiezingsprogrammas";
 
-        public VectorStoreService(string chromaUrl)
+        // Accepts an IChromaClient so the implementation can be HTTP-backed (Render) or in-memory for tests
+        public VectorStoreService(IChromaClient chromaClient)
         {
-            _chroma = new ChromaClient(chromaUrl);
+            _chroma = chromaClient;
         }
 
         /// <summary>
@@ -70,19 +71,95 @@ namespace OmgekeerdeStemWijzer.Api.Services
         }
     }
 
-    public class ChromaClient
+    public interface IChromaClient
     {
-        private readonly string _url;
+        Task<IChromaCollection> GetOrCreateCollectionAsync(string name);
+    }
 
-        public ChromaClient(string chromaUrl)
+    /// <summary>
+    /// HTTP-backed Chroma client. This implements a minimal REST surface used by
+    /// the VectorStoreService. The exact endpoints used (/collections/{name}/add
+    /// and /collections/{name}/query) are intentionally simple and may need to be
+    /// adapted to the API exposed by the Chroma instance running on Render.
+    /// </summary>
+    public class ChromaHttpClient : IChromaClient
+    {
+        private readonly HttpClient _http;
+
+        public ChromaHttpClient(HttpClient httpClient)
         {
-            _url = chromaUrl;
+            _http = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
         }
 
         public Task<IChromaCollection> GetOrCreateCollectionAsync(string name)
         {
-            IChromaCollection collection = new InMemoryChromaCollection(name);
+            IChromaCollection collection = new ChromaHttpCollection(_http, name);
             return Task.FromResult(collection);
+        }
+
+        private class ChromaHttpCollection : IChromaCollection
+        {
+            private readonly HttpClient _http;
+            private readonly string _name;
+
+            public ChromaHttpCollection(HttpClient http, string name)
+            {
+                _http = http;
+                _name = name;
+            }
+
+            public async Task AddAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
+            {
+                var payload = new
+                {
+                    ids,
+                    embeddings,
+                    metadatas,
+                    documents
+                };
+
+                var resp = await _http.PostAsJsonAsync($"collections/{_name}/add", payload);
+                resp.EnsureSuccessStatusCode();
+            }
+
+            public async Task<QueryResult> QueryAsync(float[][] queryEmbeddings, int nResults)
+            {
+                var payload = new
+                {
+                    query_embeddings = queryEmbeddings,
+                    n_results = nResults
+                };
+
+                var resp = await _http.PostAsJsonAsync($"collections/{_name}/query", payload);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    return new QueryResult { Documents = Enumerable.Empty<IEnumerable<string>>() };
+                }
+
+                using var stream = await resp.Content.ReadAsStreamAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(stream);
+                var root = doc.RootElement;
+
+                var results = new List<IEnumerable<string>>();
+                if (root.ValueKind == System.Text.Json.JsonValueKind.Object && root.TryGetProperty("documents", out var docsEl) && docsEl.ValueKind == System.Text.Json.JsonValueKind.Array)
+                {
+                    foreach (var arr in docsEl.EnumerateArray())
+                    {
+                        if (arr.ValueKind == System.Text.Json.JsonValueKind.Array)
+                        {
+                            var list = new List<string>();
+                            foreach (var item in arr.EnumerateArray())
+                            {
+                                if (item.ValueKind == System.Text.Json.JsonValueKind.String)
+                                    list.Add(item.GetString() ?? string.Empty);
+                            }
+                            results.Add(list);
+                        }
+                    }
+                }
+
+                return new QueryResult { Documents = results };
+            }
         }
     }
 

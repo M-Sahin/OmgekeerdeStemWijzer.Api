@@ -6,13 +6,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - OpenAI__ApiKey=${OpenAI__ApiKey}
-      - OpenAI__EmbeddingModel=${OpenAI__EmbeddingModel}
-      - Groq__ApiKey=${Groq__ApiKey}
-      - Groq__BaseUrl=${Groq__BaseUrl}
-      - Groq__Model=${Groq__Model}
-      - ServiceUrls__ChromaDb=http://chromadb:8000
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - "OpenAI__ApiKey=${OpenAI__ApiKey}"
+      - "OpenAI__EmbeddingModel=${OpenAI__EmbeddingModel}"
+      - "Groq__ApiKey=${Groq__ApiKey}"
+      - "Groq__BaseUrl=${Groq__BaseUrl}"
+      - "Groq__Model=${Groq__Model}"
+      - "ServiceUrls__ChromaDb=http://chromadb:8000"
+      - "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}"
     env_file:
       - .env
     volumes:

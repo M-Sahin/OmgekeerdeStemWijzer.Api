@@ -1,0 +1,143 @@
+2025-10-25 18:34:56.023 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 18:34:56.908 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-25 18:34:56.912 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 18:34:56.913 +02:00 [INF] Hosting environment: Development
+2025-10-25 18:34:56.915 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-25 18:35:02.159 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/ - null null
+2025-10-25 18:35:02.215 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-25 18:35:02.224 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/ - 404 0 null 67.1585ms
+2025-10-25 18:35:02.254 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295/, Response status code: 404
+2025-10-25 18:35:06.374 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/index.html - null null
+2025-10-25 18:35:06.439 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/index.html - 200 null text/html;charset=utf-8 64.9019ms
+2025-10-25 18:35:06.625 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - null null
+2025-10-25 18:35:06.728 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 103.2736ms
+2025-10-25 18:35:11.797 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/Ingestion/start-indexing - null 0
+2025-10-25 18:35:11.801 +02:00 [INF] CORS policy execution successful.
+2025-10-25 18:35:11.802 +02:00 [INF] Executing endpoint 'OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:35:11.824 +02:00 [INF] Route matched with {action = "StartIndexing", controller = "Ingestion"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] StartIndexing() on controller OmgekeerdeStemWijzer.Api.Controllers.IngestionController (OmgekeerdeStemWijzer.Api).
+2025-10-25 18:35:11.842 +02:00 [INF] Initialized OpenAI EmbeddingService with model: text-embedding-3-small
+2025-10-25 18:35:11.846 +02:00 [INF] Start verwerking van manifest: BBB
+2025-10-25 18:36:07.966 +02:00 [INF] Voltooide verwerking voor BBB. 162 chunks toegevoegd.
+2025-10-25 18:36:07.968 +02:00 [INF] Start verwerking van manifest: CDA
+2025-10-25 18:36:42.719 +02:00 [INF] Voltooide verwerking voor CDA. 122 chunks toegevoegd.
+2025-10-25 18:36:42.721 +02:00 [INF] Start verwerking van manifest: CU
+2025-10-25 18:37:25.840 +02:00 [INF] Voltooide verwerking voor CU. 136 chunks toegevoegd.
+2025-10-25 18:37:25.842 +02:00 [INF] Start verwerking van manifest: D66
+2025-10-25 18:37:59.578 +02:00 [INF] Voltooide verwerking voor D66. 109 chunks toegevoegd.
+2025-10-25 18:37:59.579 +02:00 [INF] Start verwerking van manifest: GL_PVDA
+2025-10-25 18:38:54.089 +02:00 [INF] Voltooide verwerking voor GL_PVDA. 199 chunks toegevoegd.
+2025-10-25 18:38:54.091 +02:00 [INF] Start verwerking van manifest: NSC
+2025-10-25 18:39:38.255 +02:00 [INF] Voltooide verwerking voor NSC. 154 chunks toegevoegd.
+2025-10-25 18:39:38.257 +02:00 [INF] Start verwerking van manifest: PVDD
+2025-10-25 18:40:19.455 +02:00 [INF] Voltooide verwerking voor PVDD. 125 chunks toegevoegd.
+2025-10-25 18:40:19.456 +02:00 [INF] Start verwerking van manifest: PVV
+2025-10-25 18:40:30.508 +02:00 [INF] Voltooide verwerking voor PVV. 40 chunks toegevoegd.
+2025-10-25 18:40:30.511 +02:00 [INF] Start verwerking van manifest: SP
+2025-10-25 18:40:43.584 +02:00 [INF] Voltooide verwerking voor SP. 46 chunks toegevoegd.
+2025-10-25 18:40:43.587 +02:00 [INF] Start verwerking van manifest: VVD
+2025-10-25 18:41:32.698 +02:00 [INF] Voltooide verwerking voor VVD. 168 chunks toegevoegd.
+2025-10-25 18:41:32.704 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-25 18:41:32.720 +02:00 [INF] Executed action OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api) in 380889.0498ms
+2025-10-25 18:41:32.723 +02:00 [INF] Executed endpoint 'OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:41:32.725 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/Ingestion/start-indexing - 200 null application/json; charset=utf-8 380928.1629ms
+2025-10-25 18:42:44.970 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/Matching/match - application/json 115
+2025-10-25 18:42:44.973 +02:00 [INF] CORS policy execution successful.
+2025-10-25 18:42:44.974 +02:00 [INF] Executing endpoint 'MatchingController.GetMatch (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:42:44.984 +02:00 [INF] Route matched with {action = "GetMatch", controller = "Matching"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMatch(MatchingRequest) on controller MatchingController (OmgekeerdeStemWijzer.Api).
+2025-10-25 18:42:44.991 +02:00 [INF] Initialized OpenAI EmbeddingService with model: text-embedding-3-small
+2025-10-25 18:42:45.007 +02:00 [INF] Initialized GroqService with default model: llama-3.1-8b-instant
+2025-10-25 18:42:45.313 +02:00 [INF] Start processing HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-25 18:42:45.323 +02:00 [INF] Sending HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-25 18:42:45.469 +02:00 [INF] Received HTTP response headers after 141.9174ms - 401
+2025-10-25 18:42:45.471 +02:00 [INF] End processing HTTP request after 159.2429ms - 401
+2025-10-25 18:42:45.474 +02:00 [ERR] Groq API error 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+2025-10-25 18:42:45.475 +02:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2025-10-25 18:42:45.477 +02:00 [INF] Executed action MatchingController.GetMatch (OmgekeerdeStemWijzer.Api) in 491.4852ms
+2025-10-25 18:42:45.478 +02:00 [INF] Executed endpoint 'MatchingController.GetMatch (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:42:45.478 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/Matching/match - 502 null text/plain; charset=utf-8 508.1843ms
+2025-10-25 18:43:05.789 +02:00 [INF] Application is shutting down...
+2025-10-25 18:43:05.795 +02:00 [INF] Application shut down gracefully
+2025-10-25 18:47:49.514 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 18:47:49.835 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-25 18:47:49.839 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 18:47:49.841 +02:00 [INF] Hosting environment: Development
+2025-10-25 18:47:49.842 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-25 18:47:55.789 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/ - null null
+2025-10-25 18:47:55.829 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-25 18:47:55.834 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/ - 404 0 null 46.8847ms
+2025-10-25 18:47:55.907 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295/, Response status code: 404
+2025-10-25 18:48:17.912 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/index.html - null null
+2025-10-25 18:48:17.983 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/index.html - 200 null text/html;charset=utf-8 71.3036ms
+2025-10-25 18:48:18.239 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - null null
+2025-10-25 18:48:18.335 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 95.7355ms
+2025-10-25 18:48:34.601 +02:00 [INF] Application is shutting down...
+2025-10-25 18:48:34.612 +02:00 [INF] Application shut down gracefully
+2025-10-25 18:50:31.827 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 18:50:32.117 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-25 18:50:32.122 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 18:50:32.123 +02:00 [INF] Hosting environment: Development
+2025-10-25 18:50:32.123 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-25 18:51:01.037 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/Ingestion/start-indexing - null 0
+2025-10-25 18:51:01.072 +02:00 [INF] CORS policy execution successful.
+2025-10-25 18:51:01.090 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-25 18:51:01.097 +02:00 [INF] Executing endpoint 'OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:51:01.120 +02:00 [INF] Route matched with {action = "StartIndexing", controller = "Ingestion"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] StartIndexing() on controller OmgekeerdeStemWijzer.Api.Controllers.IngestionController (OmgekeerdeStemWijzer.Api).
+2025-10-25 18:51:01.137 +02:00 [INF] Initialized OpenAI EmbeddingService with model: text-embedding-3-small
+2025-10-25 18:51:01.143 +02:00 [INF] Start verwerking van manifest: BBB
+2025-10-25 18:51:52.117 +02:00 [INF] Voltooide verwerking voor BBB. 162 chunks toegevoegd.
+2025-10-25 18:51:52.119 +02:00 [INF] Start verwerking van manifest: CDA
+2025-10-25 18:52:26.759 +02:00 [INF] Voltooide verwerking voor CDA. 122 chunks toegevoegd.
+2025-10-25 18:52:26.761 +02:00 [INF] Start verwerking van manifest: CU
+2025-10-25 18:53:03.071 +02:00 [INF] Voltooide verwerking voor CU. 136 chunks toegevoegd.
+2025-10-25 18:53:03.073 +02:00 [INF] Start verwerking van manifest: D66
+2025-10-25 18:53:34.427 +02:00 [INF] Voltooide verwerking voor D66. 109 chunks toegevoegd.
+2025-10-25 18:53:34.429 +02:00 [INF] Start verwerking van manifest: GL_PVDA
+2025-10-25 18:54:25.078 +02:00 [INF] Voltooide verwerking voor GL_PVDA. 199 chunks toegevoegd.
+2025-10-25 18:54:25.080 +02:00 [INF] Start verwerking van manifest: NSC
+2025-10-25 18:55:14.276 +02:00 [INF] Voltooide verwerking voor NSC. 154 chunks toegevoegd.
+2025-10-25 18:55:14.277 +02:00 [INF] Start verwerking van manifest: PVDD
+2025-10-25 18:55:49.678 +02:00 [INF] Voltooide verwerking voor PVDD. 125 chunks toegevoegd.
+2025-10-25 18:55:49.679 +02:00 [INF] Start verwerking van manifest: PVV
+2025-10-25 18:56:00.550 +02:00 [INF] Voltooide verwerking voor PVV. 40 chunks toegevoegd.
+2025-10-25 18:56:00.552 +02:00 [INF] Start verwerking van manifest: SP
+2025-10-25 18:56:14.392 +02:00 [INF] Voltooide verwerking voor SP. 46 chunks toegevoegd.
+2025-10-25 18:56:14.393 +02:00 [INF] Start verwerking van manifest: VVD
+2025-10-25 18:57:05.609 +02:00 [INF] Voltooide verwerking voor VVD. 168 chunks toegevoegd.
+2025-10-25 18:57:05.617 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-25 18:57:05.640 +02:00 [INF] Executed action OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api) in 364513.4233ms
+2025-10-25 18:57:05.644 +02:00 [INF] Executed endpoint 'OmgekeerdeStemWijzer.Api.Controllers.IngestionController.StartIndexing (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:57:05.647 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/Ingestion/start-indexing - 200 null application/json; charset=utf-8 364612.0313ms
+2025-10-25 18:57:23.058 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/Matching/match - application/json 115
+2025-10-25 18:57:23.063 +02:00 [INF] CORS policy execution successful.
+2025-10-25 18:57:23.065 +02:00 [INF] Executing endpoint 'MatchingController.GetMatch (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:57:23.076 +02:00 [INF] Route matched with {action = "GetMatch", controller = "Matching"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMatch(MatchingRequest) on controller MatchingController (OmgekeerdeStemWijzer.Api).
+2025-10-25 18:57:23.084 +02:00 [INF] Initialized OpenAI EmbeddingService with model: text-embedding-3-small
+2025-10-25 18:57:23.106 +02:00 [INF] Initialized GroqService with default model: llama-3.1-8b-instant
+2025-10-25 18:57:23.399 +02:00 [INF] Start processing HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-25 18:57:23.411 +02:00 [INF] Sending HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-25 18:57:23.505 +02:00 [INF] Received HTTP response headers after 89.0794ms - 401
+2025-10-25 18:57:23.508 +02:00 [INF] End processing HTTP request after 110.9823ms - 401
+2025-10-25 18:57:23.511 +02:00 [ERR] Groq API error 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+2025-10-25 18:57:23.513 +02:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2025-10-25 18:57:23.514 +02:00 [INF] Executed action MatchingController.GetMatch (OmgekeerdeStemWijzer.Api) in 436.3836ms
+2025-10-25 18:57:23.515 +02:00 [INF] Executed endpoint 'MatchingController.GetMatch (OmgekeerdeStemWijzer.Api)'
+2025-10-25 18:57:23.516 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/Matching/match - 502 null text/plain; charset=utf-8 459.0286ms
+2025-10-25 19:01:37.265 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 19:01:37.533 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-25 19:01:37.536 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 19:01:37.537 +02:00 [INF] Hosting environment: Development
+2025-10-25 19:01:37.538 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-25 19:17:03.179 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 19:17:03.473 +02:00 [INF] Now listening on: http://localhost:5000
+2025-10-25 19:17:03.478 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 19:17:03.479 +02:00 [INF] Hosting environment: Development
+2025-10-25 19:17:03.480 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-25 19:17:24.342 +02:00 [INF] Application is shutting down...
+2025-10-25 19:17:24.350 +02:00 [INF] Application shut down gracefully
+2025-10-25 19:23:30.947 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-25 19:23:31.244 +02:00 [INF] Now listening on: http://localhost:5000
+2025-10-25 19:23:31.248 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-25 19:23:31.249 +02:00 [INF] Hosting environment: Development
+2025-10-25 19:23:31.250 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
