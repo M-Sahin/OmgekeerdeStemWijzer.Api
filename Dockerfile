@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore dependencies
-COPY ["OmgekeerdeStemWijzer.Api/OmgekeerdeStemWijzer.Api.csproj", "./"]
+COPY ["OmgekeerdeStemWijzer.Api.csproj", "./"]
 RUN dotnet restore "OmgekeerdeStemWijzer.Api.csproj"
 
-# Copy project files from the project subfolder only to avoid duplicate sources
-COPY OmgekeerdeStemWijzer.Api/ ./
+# Copy everything else and build
+COPY . .
 RUN dotnet build "OmgekeerdeStemWijzer.Api.csproj" -c Release -o /app/build
 
 # Publish stage
