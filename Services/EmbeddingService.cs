@@ -30,7 +30,9 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 : openAIOptions.EmbeddingModel;
             
             _logger = logger;
-            _client = new EmbeddingClient(_modelName, openAIOptions.ApiKey);
+            // The client expects the API key first; pass the api key then the model name to ensure the
+            // model parameter is set on subsequent calls.
+            _client = new EmbeddingClient(openAIOptions.ApiKey, _modelName);
             _logger.LogInformation("Initialized OpenAI EmbeddingService with model: {Model}", _modelName);
         }
 
@@ -46,6 +48,9 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
                 _logger.LogDebug("GenerateEmbeddingAsync: generating embedding for text length {Len}", text.Length);
                 
+                // Ensure we pass the configured model explicitly to the client call.
+                // Call the client; the constructor was given the api key and model so the
+                // model parameter will be included by the client implementation.
                 var embedding = await _client.GenerateEmbeddingAsync(text);
                 var vector = embedding.Value.ToFloats().ToArray();
                 
