@@ -3,7 +3,6 @@ using OmgekeerdeStemWijzer.Api.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
 using Polly;
 using Polly.Extensions.Http;
 using Serilog;
@@ -99,41 +98,6 @@ app.MapHealthChecks("/health");
 app.MapHealthChecks("/ready");
 
 app.UseCors();
-
-// Simple bearer-token middleware for lightweight protection when exposing the API publicly.
-// If VPS_API_TOKEN is set (env or in .env), requests (except health/readiness and swagger) must include
-// header: Authorization: Bearer <VPS_API_TOKEN>
-var vpsToken = builder.Configuration["VPS_API_TOKEN"] ?? Environment.GetEnvironmentVariable("VPS_API_TOKEN");
-if (!string.IsNullOrWhiteSpace(vpsToken))
-{
-    app.Use(async (context, next) =>
-    {
-        var path = context.Request.Path;
-        // allow health and readiness checks and swagger UI without token
-        if (path.StartsWithSegments("/health") || path.StartsWithSegments("/ready") || path.StartsWithSegments("/swagger") || path.StartsWithSegments("/swagger/index.html"))
-        {
-            await next();
-            return;
-        }
-
-        if (!context.Request.Headers.TryGetValue("Authorization", out var auth))
-        {
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Unauthorized");
-            return;
-        }
-
-        var header = auth.ToString();
-        if (!header.Equals($"Bearer {vpsToken}", StringComparison.Ordinal))
-        {
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Unauthorized");
-            return;
-        }
-
-        await next();
-    });
-}
 
 // Enable Swagger in Development, or in Production when explicitly allowed via configuration.
 // Set configuration key `Swagger:EnableInProduction=true` (or env var `Swagger__EnableInProduction=true`) to enable in prod.
