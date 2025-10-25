@@ -69,6 +69,16 @@ builder.Services.AddHttpClient<GroqService>("groq", (sp, client) =>
 
 builder.Services.AddScoped<EmbeddingService>();
 
+builder.Services.AddHttpClient("openai", client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com/");
+    client.Timeout = TimeSpan.FromSeconds(60);
+    if (!string.IsNullOrWhiteSpace(openAIApiKey))
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAIApiKey);
+    }
+});
+
 var chromaApiKey = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKey")
     ?? Environment.GetEnvironmentVariable("Chroma__ApiKey");
 var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "Authorization";
