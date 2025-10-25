@@ -1,0 +1,33 @@
+2025-10-26 00:19:32.451 +02:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-26 00:19:32.751 +02:00 [INF] User profile is available. Using 'C:\Users\Msahi\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-26 00:19:32.770 +02:00 [INF] Creating key {196c0de8-cf4f-4555-9035-699817d56a5e} with creation date 2025-10-25 22:19:32Z, activation date 2025-10-25 22:19:32Z, and expiration date 2026-01-23 22:19:32Z.
+2025-10-26 00:19:32.792 +02:00 [INF] Writing data to file 'C:\Users\Msahi\AppData\Local\ASP.NET\DataProtection-Keys\key-196c0de8-cf4f-4555-9035-699817d56a5e.xml'.
+2025-10-26 00:19:32.894 +02:00 [INF] Start processing HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections
+2025-10-26 00:19:32.904 +02:00 [INF] Sending HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections
+2025-10-26 00:19:33.114 +02:00 [INF] Received HTTP response headers after 206.1143ms - 200
+2025-10-26 00:19:33.125 +02:00 [INF] End processing HTTP request after 237.9466ms - 200
+2025-10-26 00:19:33.158 +02:00 [INF] Now listening on: http://localhost:5295
+2025-10-26 00:19:33.162 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-26 00:19:33.163 +02:00 [INF] Hosting environment: Development
+2025-10-26 00:19:33.164 +02:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-26 00:19:36.856 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/ - null null
+2025-10-26 00:19:36.892 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-26 00:19:36.955 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/ - 404 0 null 100.2672ms
+2025-10-26 00:19:36.959 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295/, Response status code: 404
+2025-10-26 00:19:46.729 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - null null
+2025-10-26 00:19:46.839 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 109.5819ms
+2025-10-26 00:24:07.372 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/chat - application/json 88
+2025-10-26 00:24:07.388 +02:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenMalformedException: IDX14120: JWT is not well formed, there is only one dot (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EncodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken.ReadToken(ReadOnlyMemory`1 encodedTokenMemory)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebToken..ctor(String jwtEncodedString)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ReadToken(String token, TokenValidationParameters validationParameters)
+2025-10-26 00:24:07.399 +02:00 [INF] Bearer was not authenticated. Failure message: IDX14120: JWT is not well formed, there is only one dot (.).
+The token needs to be in JWS or JWE Compact Serialization Format. (JWS): 'EncodedHeader.EncodedPayload.EncodedSignature'. (JWE): 'EncodedProtectedHeader.EncodedEncryptedKey.EncodedInitializationVector.EncodedCiphertext.EncodedAuthenticationTag'.
+2025-10-26 00:24:07.402 +02:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2025-10-26 00:24:07.407 +02:00 [INF] AuthenticationScheme: Bearer was challenged.
+2025-10-26 00:24:07.408 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/chat - 401 0 null 35.722ms
+2025-10-26 00:26:48.256 +02:00 [INF] Application is shutting down...
+2025-10-26 00:26:48.262 +02:00 [INF] Application shut down gracefully
