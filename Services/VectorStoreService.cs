@@ -43,7 +43,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 { "pagina", chunk.PageNumber }
             };
 
-            await _collection.AddAsync(
+            await _collection.UpsertAsync(
                 ids: new[] { chunk.Id },
                 embeddings: new[] { embedding },
                 metadatas: new[] { metadata },
@@ -126,7 +126,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 _name = name;
             }
 
-            public async Task AddAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
+            public async Task UpsertAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
             {
                 var payload = new
                 {
@@ -136,7 +136,8 @@ namespace OmgekeerdeStemWijzer.Api.Services
                     documents
                 };
 
-                var resp = await _http.PostAsJsonAsync($"collections/{_name}/add", payload);
+                // Modern Chroma uses /upsert to insert or update documents
+                var resp = await _http.PostAsJsonAsync($"collections/{_name}/upsert", payload);
                 resp.EnsureSuccessStatusCode();
             }
 
@@ -183,7 +184,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
     public interface IChromaCollection
     {
-        Task AddAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents);
+        Task UpsertAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents);
         Task<QueryResult> QueryAsync(float[][] queryEmbeddings, int nResults);
     }
 
@@ -202,18 +203,30 @@ namespace OmgekeerdeStemWijzer.Api.Services
             _name = name;
         }
 
-        public Task AddAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
+        public Task UpsertAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
         {
             for (int i = 0; i < documents.Length; i++)
             {
-                var doc = new StoredDocument
+                var id = ids?.ElementAtOrDefault(i) ?? System.Guid.NewGuid().ToString();
+                var existing = _documents.FirstOrDefault(d => d.Id == id);
+                if (existing != null)
                 {
-                    Id = ids?.ElementAtOrDefault(i) ?? System.Guid.NewGuid().ToString(),
-                    Embedding = embeddings?.ElementAtOrDefault(i),
-                    Metadata = metadatas?.ElementAtOrDefault(i),
-                    Content = documents[i] ?? string.Empty
-                };
-                _documents.Add(doc);
+                    // update existing
+                    existing.Embedding = embeddings?.ElementAtOrDefault(i) ?? existing.Embedding;
+                    existing.Metadata = metadatas?.ElementAtOrDefault(i) ?? existing.Metadata;
+                    existing.Content = documents[i] ?? existing.Content;
+                }
+                else
+                {
+                    var doc = new StoredDocument
+                    {
+                        Id = id,
+                        Embedding = embeddings?.ElementAtOrDefault(i),
+                        Metadata = metadatas?.ElementAtOrDefault(i),
+                        Content = documents[i] ?? string.Empty
+                    };
+                    _documents.Add(doc);
+                }
             }
 
             return Task.CompletedTask;
