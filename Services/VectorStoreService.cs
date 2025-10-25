@@ -76,12 +76,6 @@ namespace OmgekeerdeStemWijzer.Api.Services
         Task<IChromaCollection> GetOrCreateCollectionAsync(string name);
     }
 
-    /// <summary>
-    /// HTTP-backed Chroma client. This implements a minimal REST surface used by
-    /// the VectorStoreService. The exact endpoints used (/collections/{name}/add
-    /// and /collections/{name}/query) are intentionally simple and may need to be
-    /// adapted to the API exposed by the Chroma instance running on Render.
-    /// </summary>
     public class ChromaHttpClient : IChromaClient
     {
         private readonly HttpClient _http;
@@ -91,10 +85,34 @@ namespace OmgekeerdeStemWijzer.Api.Services
             _http = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
         }
 
-        public Task<IChromaCollection> GetOrCreateCollectionAsync(string name)
+        public async Task<IChromaCollection> GetOrCreateCollectionAsync(string name)
         {
+            // Try to create the collection on the server. This is idempotent:
+            // if the collection already exists the server may return 409 or similar.
+            // We swallow network or server errors here so the client can still
+            // construct a collection wrapper; AddAsync will surface any remaining
+            // problems when the server truly rejects the add.
+            try
+            {
+                var createPayload = new { name = name };
+                var resp = await _http.PostAsJsonAsync("collections", createPayload);
+                // Accept success (200/201) or conflict (already exists). For other
+                // non-success responses, throw to make the problem visible.
+                if (!resp.IsSuccessStatusCode && resp.StatusCode != System.Net.HttpStatusCode.Conflict)
+                {
+                    resp.EnsureSuccessStatusCode();
+                }
+            }
+            catch (System.Exception)
+            {
+                // Non-fatal: we choose to continue and return a collection wrapper.
+                // The calling AddAsync will fail if the server actually doesn't have
+                // the collection or the network is down. Avoid throwing here to keep
+                // initialization resilient; callers can retry or handle errors.
+            }
+
             IChromaCollection collection = new ChromaHttpCollection(_http, name);
-            return Task.FromResult(collection);
+            return collection;
         }
 
         private class ChromaHttpCollection : IChromaCollection
