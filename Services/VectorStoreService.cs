@@ -79,51 +79,63 @@ namespace OmgekeerdeStemWijzer.Api.Services
     public class ChromaHttpClient : IChromaClient
     {
         private readonly HttpClient _http;
+        private readonly string _tenant;
+        private readonly string _database;
 
-        public ChromaHttpClient(HttpClient httpClient)
+        public ChromaHttpClient(HttpClient httpClient, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _http = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient));
+            _tenant = configuration.GetSection("Chroma").GetValue<string>("Tenant") ?? "default_tenant";
+            _database = configuration.GetSection("Chroma").GetValue<string>("Database") ?? "default_database";
         }
 
         public async Task<IChromaCollection> GetOrCreateCollectionAsync(string name)
         {
             // Try to create the collection on the server. This is idempotent:
             // if the collection already exists the server may return 409 or similar.
-            // We swallow network or server errors here so the client can still
-            // construct a collection wrapper; AddAsync will surface any remaining
-            // problems when the server truly rejects the add.
+            // now we must obtain the collection ID to use modern endpoints (v2)
+            string? collectionId = null;
             try
             {
-                var createPayload = new { name = name };
-                var resp = await _http.PostAsJsonAsync("collections", createPayload);
-                // Accept success (200/201) or conflict (already exists). For other
-                // non-success responses, throw to make the problem visible.
-                if (!resp.IsSuccessStatusCode && resp.StatusCode != System.Net.HttpStatusCode.Conflict)
+                var createPayload = new { name = name, get_or_create = true };
+                var createResp = await _http.PostAsJsonAsync($"tenants/{_tenant}/databases/{_database}/collections", createPayload);
+                if (createResp.IsSuccessStatusCode)
                 {
-                    resp.EnsureSuccessStatusCode();
+                    collectionId = await TryExtractCollectionIdAsync(createResp.Content);
+                }
+                else
+                {
+                    // Attempt a lookup by listing and filtering by name
+                    var listResp = await _http.GetAsync($"tenants/{_tenant}/databases/{_database}/collections?limit=1000&offset=0");
+                    if (listResp.IsSuccessStatusCode)
+                        collectionId = await TryFindCollectionIdByNameAsync(listResp.Content, name);
                 }
             }
             catch (System.Exception)
             {
-                // Non-fatal: we choose to continue and return a collection wrapper.
-                // The calling AddAsync will fail if the server actually doesn't have
-                // the collection or the network is down. Avoid throwing here to keep
-                // initialization resilient; callers can retry or handle errors.
+                // We'll fall through and throw a clear error if we couldn't determine the ID
             }
 
-            IChromaCollection collection = new ChromaHttpCollection(_http, name);
+            if (string.IsNullOrWhiteSpace(collectionId))
+                throw new System.InvalidOperationException($"Kon Chroma-collectie-ID niet ophalen voor '{name}'.");
+
+            IChromaCollection collection = new ChromaHttpCollection(_http, _tenant, _database, collectionId);
             return collection;
         }
 
         private class ChromaHttpCollection : IChromaCollection
         {
             private readonly HttpClient _http;
-            private readonly string _name;
+            private readonly string _tenant;
+            private readonly string _database;
+            private readonly string _collectionId;
 
-            public ChromaHttpCollection(HttpClient http, string name)
+            public ChromaHttpCollection(HttpClient http, string tenant, string database, string collectionId)
             {
                 _http = http;
-                _name = name;
+                _tenant = tenant;
+                _database = database;
+                _collectionId = collectionId;
             }
 
             public async Task UpsertAsync(string[] ids, float[][] embeddings, IDictionary<string, object>[] metadatas, string[] documents)
@@ -136,8 +148,8 @@ namespace OmgekeerdeStemWijzer.Api.Services
                     documents
                 };
 
-                // Modern Chroma uses /upsert to insert or update documents
-                var resp = await _http.PutAsJsonAsync($"collections/{_name}/upsert", payload);
+                // Chroma v2: POST /api/v2/tenants/{tenant}/databases/{database}/collections/{collection_id}/upsert
+                var resp = await _http.PostAsJsonAsync($"tenants/{_tenant}/databases/{_database}/collections/{_collectionId}/upsert", payload);
                 resp.EnsureSuccessStatusCode();
             }
 
@@ -149,7 +161,8 @@ namespace OmgekeerdeStemWijzer.Api.Services
                     n_results = nResults
                 };
 
-                var resp = await _http.PostAsJsonAsync($"collections/{_name}/query", payload);
+                // Chroma v2: POST /api/v2/tenants/{tenant}/databases/{database}/collections/{collection_id}/query
+                var resp = await _http.PostAsJsonAsync($"tenants/{_tenant}/databases/{_database}/collections/{_collectionId}/query", payload);
                 if (!resp.IsSuccessStatusCode)
                 {
                     return new QueryResult { Documents = Enumerable.Empty<IEnumerable<string>>() };
@@ -179,6 +192,108 @@ namespace OmgekeerdeStemWijzer.Api.Services
 
                 return new QueryResult { Documents = results };
             }
+        }
+
+        private static async Task<string?> TryExtractCollectionIdAsync(HttpContent content)
+        {
+            try
+            {
+                using var stream = await content.ReadAsStreamAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(stream);
+                var root = doc.RootElement;
+
+                // Common shapes to try: { id: "..." }
+                if (root.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    if (root.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.String)
+                        return idEl.GetString();
+
+                    // { collection: { id: "..." } }
+                    if (root.TryGetProperty("collection", out var collEl) && collEl.ValueKind == System.Text.Json.JsonValueKind.Object)
+                    {
+                        if (collEl.TryGetProperty("id", out var id2) && id2.ValueKind == System.Text.Json.JsonValueKind.String)
+                            return id2.GetString();
+                    }
+
+                    // { collections: [ { id: "..." } ] }
+                    if (root.TryGetProperty("collections", out var collsEl) && collsEl.ValueKind == System.Text.Json.JsonValueKind.Array)
+                    {
+                        foreach (var item in collsEl.EnumerateArray())
+                        {
+                            if (item.ValueKind == System.Text.Json.JsonValueKind.Object && item.TryGetProperty("id", out var id3) && id3.ValueKind == System.Text.Json.JsonValueKind.String)
+                                return id3.GetString();
+                        }
+                    }
+                }
+
+                // [ { id: "..." } ]
+                if (root.ValueKind == System.Text.Json.JsonValueKind.Array)
+                {
+                    foreach (var item in root.EnumerateArray())
+                    {
+                        if (item.ValueKind == System.Text.Json.JsonValueKind.Object && item.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.String)
+                            return idEl.GetString();
+                    }
+                }
+            }
+            catch
+            {
+                // ignore and return null
+            }
+
+            return null;
+        }
+
+        private static async Task<string?> TryFindCollectionIdByNameAsync(HttpContent content, string targetName)
+        {
+            try
+            {
+                using var stream = await content.ReadAsStreamAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(stream);
+                var root = doc.RootElement;
+
+                // Array of collections
+                if (root.ValueKind == System.Text.Json.JsonValueKind.Array)
+                {
+                    foreach (var item in root.EnumerateArray())
+                    {
+                        if (item.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (item.TryGetProperty("name", out var nameEl) &&
+                                nameEl.ValueKind == System.Text.Json.JsonValueKind.String &&
+                                string.Equals(nameEl.GetString(), targetName, System.StringComparison.Ordinal))
+                            {
+                                if (item.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.String)
+                                    return idEl.GetString();
+                            }
+                        }
+                    }
+                }
+
+                // { collections: [ ... ] }
+                if (root.ValueKind == System.Text.Json.JsonValueKind.Object &&
+                    root.TryGetProperty("collections", out var collsEl) && collsEl.ValueKind == System.Text.Json.JsonValueKind.Array)
+                {
+                    foreach (var item in collsEl.EnumerateArray())
+                    {
+                        if (item.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (item.TryGetProperty("name", out var nameEl) &&
+                                nameEl.ValueKind == System.Text.Json.JsonValueKind.String &&
+                                string.Equals(nameEl.GetString(), targetName, System.StringComparison.Ordinal))
+                            {
+                                if (item.TryGetProperty("id", out var idEl) && idEl.ValueKind == System.Text.Json.JsonValueKind.String)
+                                    return idEl.GetString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parsing errors; return null
+            }
+            return null;
         }
     }
 

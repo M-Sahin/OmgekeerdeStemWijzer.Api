@@ -45,3 +45,17 @@ Het project verwacht de volgende API keys in de configuratie:
 - **Groq API Key** voor LLM responses (indien gebruikt)
 
 Bewaar deze veilig via user secrets of omgevingsvariabelen, niet in de repository.
+
+## Chroma v2 configuratie
+
+Deze API gebruikt Chroma v2 als vector store. Stel de volgende variabelen in (via `.env`, user secrets of het hosting platform):
+
+- ServiceUrls__ChromaDb = jouw Chroma basis-URL (bijv. https://omgekeerdestemwijzer-chromadb.onrender.com)
+- Chroma__ApiKeyHeader = x-chroma-token
+- Chroma__ApiKey = jouw Chroma token (zonder "Bearer ")
+- Chroma__Tenant = jouw tenant (bijv. default_tenant)
+- Chroma__Database = jouw database (bijv. default_database)
+
+Opmerking:
+- De client spreekt de v2 endpoints aan (base path /api/v2)
+- Upsert en Query gebruiken het collection UUID (geen naam) en sturen POST verzoeken naar respectievelijk `/upsert` en `/query`.

@@ -86,7 +86,8 @@ var chromaApiKey = builder.Configuration.GetSection("Chroma").GetValue<string>("
     ?? Environment.GetEnvironmentVariable("Chroma__ApiKey");
 chromaApiKey = (chromaApiKey ?? string.Empty).Trim();
 var safeChromaApiKey = chromaApiKey.Replace("\r", string.Empty).Replace("\n", string.Empty);
-var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "Authorization";
+// Default header for Chroma v2 is x-chroma-token; can be overridden via config
+var chromaApiKeyHeader = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyHeader") ?? "x-chroma-token";
 var chromaApiKeyScheme = builder.Configuration.GetSection("Chroma").GetValue<string>("ApiKeyScheme") ?? "Bearer";
 
 // Configure a typed HttpClient for IChromaClient so ChromaHttpClient always receives the correctly configured instance.
@@ -94,9 +95,19 @@ var chromaClientBuilder = builder.Services.AddHttpClient<IChromaClient, ChromaHt
 {
     var baseUrl = chromaDbUrl.EndsWith('/') ? chromaDbUrl : chromaDbUrl + "/";
 
-    if (baseUrl.IndexOf("api/v1", StringComparison.OrdinalIgnoreCase) < 0)
+    // Align with Chroma v2 OpenAPI: ensure base points to /api/v2/
+    var hasV2 = baseUrl.IndexOf("api/v2", StringComparison.OrdinalIgnoreCase) >= 0;
+    var hasV1 = baseUrl.IndexOf("api/v1", StringComparison.OrdinalIgnoreCase) >= 0;
+    if (!hasV2)
     {
-        baseUrl = baseUrl + "api/v1/";
+        // strip v1 if present, then append v2
+        if (hasV1)
+        {
+            baseUrl = baseUrl.Replace("api/v1/", string.Empty, StringComparison.OrdinalIgnoreCase)
+                             .Replace("api/v1", string.Empty, StringComparison.OrdinalIgnoreCase);
+            if (!baseUrl.EndsWith('/')) baseUrl += "/";
+        }
+        baseUrl = baseUrl + "api/v2/";
     }
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(60);
@@ -109,6 +120,7 @@ var chromaClientBuilder = builder.Services.AddHttpClient<IChromaClient, ChromaHt
         }
         else
         {
+            // For x-chroma-token, the value should be the raw token
             client.DefaultRequestHeaders.Remove(chromaApiKeyHeader);
             client.DefaultRequestHeaders.Add(chromaApiKeyHeader, safeChromaApiKey);
         }
@@ -146,8 +158,6 @@ app.MapHealthChecks("/ready");
 
 app.UseCors();
 
-// Enable Swagger in Development, or in Production when explicitly allowed via configuration.
-// Set configuration key `Swagger:EnableInProduction=true` (or env var `Swagger__EnableInProduction=true`) to enable in prod.
 var enableSwaggerInProd = builder.Configuration.GetSection("Swagger").GetValue<bool>("EnableInProduction", false);
 if (app.Environment.IsDevelopment() || enableSwaggerInProd)
 {
