@@ -199,3 +199,19 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2025-10-26 00:31:41.242 +02:00 [INF] AuthenticationScheme: Bearer was challenged.
 2025-10-26 00:31:41.243 +02:00 [INF] Request finished HTTP/1.1 POST https://localhost:7283/api/chat - 401 0 null 16.5045ms
 2025-10-26 00:31:41.245 +02:00 [INF] Connection id "0HNGK2MJH53P9", Request id "0HNGK2MJH53P9:00000001": the application completed without reading the entire request body.
+2025-10-26 13:28:23.682 +01:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-26 13:28:24.008 +01:00 [INF] User profile is available. Using 'C:\Users\Msahi\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-26 13:28:24.119 +01:00 [INF] Now listening on: http://localhost:8080
+2025-10-26 13:28:24.122 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-26 13:28:24.123 +01:00 [INF] Hosting environment: Development
+2025-10-26 13:28:24.124 +01:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-26 13:28:43.180 +01:00 [INF] Application is shutting down...
+2025-10-26 13:28:43.188 +01:00 [INF] Application shut down gracefully
+2025-10-26 13:28:50.833 +01:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-26 13:28:51.077 +01:00 [INF] User profile is available. Using 'C:\Users\Msahi\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-26 13:28:51.155 +01:00 [INF] Now listening on: http://localhost:8080
+2025-10-26 13:28:51.159 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-26 13:28:51.160 +01:00 [INF] Hosting environment: Development
+2025-10-26 13:28:51.161 +01:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-26 13:29:00.868 +01:00 [INF] Application is shutting down...
+2025-10-26 13:29:00.876 +01:00 [INF] Application shut down gracefully
