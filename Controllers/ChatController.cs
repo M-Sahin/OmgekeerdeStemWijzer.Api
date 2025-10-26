@@ -157,6 +157,37 @@ Gebruik bij het noemen van partijen ALTIJD de correcte volledige naam of de juis
             return Ok(aiMsg);
         }
 
+        /// <summary>
+        /// Haalt alle chat sessions op voor de ingelogde gebruiker
+        /// </summary>
+        [HttpGet("history")]
+        public async Task<IActionResult> GetChatHistory()
+        {
+            var userId = GetUserId(User);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            var chats = await _chatHistory.GetChatHistoryAsync(userId);
+            return Ok(chats);
+        }
+
+        /// <summary>
+        /// Haalt alle berichten op van een specifieke chat
+        /// </summary>
+        [HttpGet("{chatId}/messages")]
+        public async Task<IActionResult> GetChatMessages(string chatId)
+        {
+            if (string.IsNullOrWhiteSpace(chatId))
+                return BadRequest(new { error = "chatId is required" });
+
+            var userId = GetUserId(User);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            var messages = await _chatHistory.GetChatMessagesAsync(userId, chatId);
+            return Ok(messages);
+        }
+
         private static string GetUserId(ClaimsPrincipal user)
         {
             // Firebase tokens often carry user_id; JwtBearer maps sub/nameidentifier sometimes
