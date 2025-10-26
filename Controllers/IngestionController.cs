@@ -8,14 +8,15 @@ namespace OmgekeerdeStemWijzer.Api.Controllers;
 public class IngestionController : ControllerBase
 {
     private readonly DocumentProcessor _processor;
-    private readonly VectorStoreService _vectorStore;
+    private readonly IVectorStoreService _vectorStore;
     private readonly EmbeddingService _embedder;
     private readonly ILogger<IngestionController> _logger;
     private const string ManifestsDir = "Data/Manifesten";
+    private const string CollectionName = "verkiezingsprogrammas";
 
     public IngestionController(
         DocumentProcessor processor,
-        VectorStoreService vectorStore,
+        IVectorStoreService vectorStore,
         EmbeddingService embedder,
         ILogger<IngestionController> logger)
     {
@@ -44,35 +45,49 @@ public class IngestionController : ControllerBase
             return NotFound($"Geen PDF-bestanden gevonden in '{ManifestsDir}'.");
         }
 
-        int totalChunks = 0;
-        
-        foreach (var filePath in pdfFiles)
+        try
         {
-            var partyName = Path.GetFileNameWithoutExtension(filePath);
-            _logger.LogInformation("Start verwerking van manifest: {Party}", partyName);
+            // STEP 1: Ensure collection exists before processing any chunks
+            _logger.LogInformation("Controleren of collectie '{CollectionName}' bestaat of aanmaken...", CollectionName);
+            await _vectorStore.GetOrCreateCollectionAsync(CollectionName);
+            _logger.LogInformation("Collectie '{CollectionName}' is beschikbaar.", CollectionName);
 
-            var chunks = _processor.ProcessPdf(filePath, partyName);
-
-            foreach (var chunk in chunks)
+            int totalChunks = 0;
+            
+            // STEP 2: Process chunks and add them to the existing collection
+            foreach (var filePath in pdfFiles)
             {
-                try
+                var partyName = Path.GetFileNameWithoutExtension(filePath);
+                _logger.LogInformation("Start verwerking van manifest: {Party}", partyName);
+
+                var chunks = _processor.ProcessPdf(filePath, partyName);
+
+                foreach (var chunk in chunks)
                 {
-                    float[] embedding = await _embedder.GenerateEmbeddingAsync(chunk.Content);
-                    
-                    if (embedding.Length > 0)
+                    try
                     {
-                        await _vectorStore.AddChunkAsync(chunk, embedding);
-                        totalChunks++;
+                        float[] embedding = await _embedder.GenerateEmbeddingAsync(chunk.Content);
+                        
+                        if (embedding.Length > 0)
+                        {
+                            await _vectorStore.AddChunkAsync(CollectionName, chunk, embedding);
+                            totalChunks++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Fout bij verwerken chunk {Id} voor partij {Party}", chunk.Id, partyName);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Fout bij verwerken chunk {Id} voor partij {Party}", chunk.Id, partyName);
-                }
+                _logger.LogInformation("Voltooide verwerking voor {Party}. {Count} chunks toegevoegd.", partyName, chunks.Count());
             }
-            _logger.LogInformation("Voltooide verwerking voor {Party}. {Count} chunks toegevoegd.", partyName, chunks.Count());
-        }
 
-        return Ok(new { Message = $"Success! {totalChunks} chunks geïndexeerd in ChromaDB.", TotalFiles = pdfFiles.Length });
+            return Ok(new { Message = $"Success! {totalChunks} chunks geïndexeerd in ChromaDB.", TotalFiles = pdfFiles.Length });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Algemene fout tijdens indexering.");
+            return StatusCode(500, $"Interne serverfout: {ex.Message}");
+        }
     }
 }

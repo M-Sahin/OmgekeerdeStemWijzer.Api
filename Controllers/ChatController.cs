@@ -15,12 +15,14 @@ namespace OmgekeerdeStemWijzer.Api.Controllers
     [Authorize]
     public class ChatController : ControllerBase
     {
+        private const string CollectionName = "verkiezingsprogrammas";
+        
         private readonly IChatHistoryService _chatHistory;
-        private readonly VectorStoreService _vectorStore;
+        private readonly IVectorStoreService _vectorStore;
         private readonly EmbeddingService _embeddingService;
         private readonly GroqService _groq;
 
-        public ChatController(IChatHistoryService chatHistory, VectorStoreService vectorStore, EmbeddingService embeddingService, GroqService groq)
+        public ChatController(IChatHistoryService chatHistory, IVectorStoreService vectorStore, EmbeddingService embeddingService, GroqService groq)
         {
             _chatHistory = chatHistory;
             _vectorStore = vectorStore;
@@ -50,7 +52,7 @@ namespace OmgekeerdeStemWijzer.Api.Controllers
 
             // RAG: embedding -> vector search -> context
             var embedding = await _embeddingService.GenerateEmbeddingAsync(request.Message);
-            var top = await _vectorStore.QueryRelevantChunksAsync(embedding, nResults: 5);
+            var top = await _vectorStore.QueryRelevantChunksAsync(CollectionName, embedding, nResults: 5);
             var context = string.Join("\n---\n", top);
 
             var systemPrompt = "You are a helpful assistant. Use the provided context to answer the user's question succinctly. If the answer is not in the context, say you are unsure.\n\nContext:\n" + context;

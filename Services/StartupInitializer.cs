@@ -16,8 +16,9 @@ namespace OmgekeerdeStemWijzer.Api.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = ((IServiceProvider)_sp).CreateScope();
-            var vector = scope.ServiceProvider.GetRequiredService<VectorStoreService>();
-            await vector.InitializeAsync(cancellationToken);
+            var vector = scope.ServiceProvider.GetRequiredService<IVectorStoreService>();
+            // No initialization needed - collections are created on-demand
+            await Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

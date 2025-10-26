@@ -1,15 +1,23 @@
 using OmgekeerdeStemWijzer.Api.Models;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace OmgekeerdeStemWijzer.Api.Services
 {
-    public class VectorStoreService
+    public interface IVectorStoreService
+    {
+        Task<IChromaCollection> GetOrCreateCollectionAsync(string collectionName);
+        Task AddChunkAsync(string collectionName, PoliticalChunk chunk, float[] embedding);
+        Task<string[]> QueryRelevantChunksAsync(string collectionName, float[] userQueryEmbedding, int nResults = 5);
+    }
+
+    public class VectorStoreService : IVectorStoreService
     {
         private readonly IChromaClient _chroma;
-        private IChromaCollection? _collection;
-        private const string CollectionName = "verkiezingsprogrammas";
+        private readonly ConcurrentDictionary<string, IChromaCollection> _collectionCache = new();
+        private const string DefaultCollectionName = "verkiezingsprogrammas";
 
         // Accepts an IChromaClient so the implementation can be HTTP-backed (Render) or in-memory for tests
         public VectorStoreService(IChromaClient chromaClient)
@@ -18,23 +26,32 @@ namespace OmgekeerdeStemWijzer.Api.Services
         }
 
         /// <summary>
-        /// Initialiseert de verbinding met de ChromaDB collectie. Moet worden aangeroepen bij de start van de applicatie.
+        /// Gets or creates a collection by name, with caching to avoid repeated lookups.
         /// </summary>
-        public async Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default)
+        /// <param name="collectionName">The name of the collection to get or create.</param>
+        /// <returns>The collection instance.</returns>
+        public async Task<IChromaCollection> GetOrCreateCollectionAsync(string collectionName)
         {
-            _collection = await _chroma.GetOrCreateCollectionAsync(CollectionName);
-            await Task.CompletedTask;
+            // Use cache if available
+            if (_collectionCache.TryGetValue(collectionName, out var cachedCollection))
+            {
+                return cachedCollection;
+            }
+
+            var collection = await _chroma.GetOrCreateCollectionAsync(collectionName);
+            _collectionCache.TryAdd(collectionName, collection); // Add to cache
+            return collection;
         }
 
         /// <summary>
         /// Voegt een enkele chunk met de bijbehorende embedding toe aan de vector store.
         /// </summary>
+        /// <param name="collectionName">The name of the collection to add to.</param>
         /// <param name="chunk">Het PoliticalChunk object met de tekst en metadata.</param>
         /// <param name="embedding">De gegenereerde embedding vector.</param>
-        public async Task AddChunkAsync(PoliticalChunk chunk, float[] embedding)
+        public async Task AddChunkAsync(string collectionName, PoliticalChunk chunk, float[] embedding)
         {
-            if (_collection == null)
-                throw new System.InvalidOperationException("VectorStoreService is niet geïnitialiseerd. Roep InitializeAsync aan.");
+            var collection = await GetOrCreateCollectionAsync(collectionName);
 
             var metadata = new Dictionary<string, object>
             {
@@ -43,7 +60,7 @@ namespace OmgekeerdeStemWijzer.Api.Services
                 { "pagina", chunk.PageNumber }
             };
 
-            await _collection.UpsertAsync(
+            await collection.UpsertAsync(
                 ids: new[] { chunk.Id },
                 embeddings: new[] { embedding },
                 metadatas: new[] { metadata },
@@ -54,15 +71,15 @@ namespace OmgekeerdeStemWijzer.Api.Services
         /// <summary>
         /// Zoekt naar de meest relevante document-chunks op basis van een query embedding.
         /// </summary>
+        /// <param name="collectionName">The name of the collection to query.</param>
         /// <param name="userQueryEmbedding">De embedding van de gebruikersvraag.</param>
         /// <param name="nResults">Het aantal resultaten dat moet worden opgehaald.</param>
         /// <returns>Een array met de tekst van de meest relevante chunks.</returns>
-        public async Task<string[]> QueryRelevantChunksAsync(float[] userQueryEmbedding, int nResults = 5)
+        public async Task<string[]> QueryRelevantChunksAsync(string collectionName, float[] userQueryEmbedding, int nResults = 5)
         {
-            if (_collection == null)
-                throw new System.InvalidOperationException("VectorStoreService is niet geïnitialiseerd. Roep InitializeAsync aan.");
+            var collection = await GetOrCreateCollectionAsync(collectionName);
 
-            var results = await _collection.QueryAsync(
+            var results = await collection.QueryAsync(
                 queryEmbeddings: new[] { userQueryEmbedding },
                 nResults: nResults
             );
