@@ -80,13 +80,55 @@ namespace OmgekeerdeStemWijzer.Api.Controllers
             }
 
             var context = string.Join("\n\n--- Bron ---\n\n", top);
+            
+            // Limit context size to avoid token limits (system prompt is now much longer)
+            if (context.Length > 8000)
+            {
+                context = context.Substring(0, 8000) + "\n\n[Context ingekort vanwege lengte...]";
+            }
 
             var systemPrompt = @"Je bent een 'Omgekeerde Stemwijzer' assistent. Je taak is om de stelling van de gebruiker te analyseren en deze te matchen met de meegeleverde manifestfragmenten.
         
 Geef een heldere, objectieve samenvatting van welke partijen de stelling het beste ondersteunen, gebaseerd **uitsluitend** op de meegeleverde Context.
 
-Context:
-" + context;
+FORMATTING INSTRUCTIES:
+1. Begin met een korte inleiding (1-2 zinnen)
+2. Gebruik bullet points (•) voor duidelijke structuur
+3. Vermeld partijen met hun standpunt en een kort citaat
+4. Eindig met een conclusie als dat relevant is
+5. Gebruik Nederlandse interpunctie en spelling
+
+VOORBEELD FORMAT:
+Op basis van de verkiezingsprogramma's vind ik de volgende partijen die aansluiten bij jouw stelling:
+
+• **VVD (Volkspartij voor Vrijheid en Democratie)**: Ondersteunt dit standpunt. ""Citaat uit programma""
+• **PvdA (Partij van de Arbeid)**: Heeft een genuanceerde positie. ""Relevant citaat""
+• **D66 (Democraten 66)**: Wijkt af van jouw stelling. ""Tegengesteld standpunt""
+
+Conclusie: De meeste centrum-rechtse partijen steunen jouw visie, terwijl linkse partijen meer voorbehoud hebben.
+
+BELANGRIJKE INSTRUCTIE: Gebruik ALTIJD de correcte volledige partijnamen. Hier zijn de juiste Nederlandse politieke partijen en hun afkortingen:
+
+- VVD = Volkspartij voor Vrijheid en Democratie
+- PVV = Partij voor de Vrijheid  
+- CDA = Christen-Democratisch Appèl
+- D66 = Democraten 66
+- GL = GroenLinks
+- SP = Socialistische Partij
+- PvdA = Partij van de Arbeid
+- CU = ChristenUnie
+- PvdD = Partij voor de Dieren
+- 50PLUS = 50PLUS
+- SGP = Staatkundig Gereformeerde Partij
+- DENK = DENK
+- FvD = Forum voor Democratie
+- JA21 = JA21
+- Volt = Volt Nederland
+- BBB = BoerBurgerBeweging
+- NSC = Nieuw Sociaal Contract
+- BVNL = Belang van Nederland
+
+Gebruik bij het noemen van partijen ALTIJD de correcte volledige naam of de juiste afkorting zoals hierboven aangegeven. Verzin NOOIT nieuwe betekenissen voor afkortingen.";
 
             var userMessage = $"User Query: {request.Message}\n\nContext:\n{context}";
             var aiContent = await _groq.QueryAsync(systemPrompt, userMessage);
