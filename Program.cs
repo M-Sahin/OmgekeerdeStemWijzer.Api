@@ -149,7 +149,7 @@ if (!string.IsNullOrWhiteSpace(gcpProjectId))
 
 builder.Services.AddTransient<IChatHistoryService, ChatHistoryService>();
 
-builder.Services.AddSingleton<VectorStoreService>();
+builder.Services.AddSingleton<IVectorStoreService, VectorStoreService>();
 
 builder.Services.AddHostedService<StartupInitializer>();
 
