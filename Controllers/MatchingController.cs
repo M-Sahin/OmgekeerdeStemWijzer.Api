@@ -63,7 +63,8 @@ public class MatchingController : ControllerBase
         }
         
         string systemPrompt = $@"Je bent een 'Omgekeerde Stemwijzer' analist. Je taak is om de stelling van de gebruiker (User Query) te analyseren en deze te matchen met de meegeleverde manifestfragmenten (Context).
-        Geef een heldere, objectieve samenvatting van welke partijen de stelling het beste ondersteunen, gebaseerd **uitsluitend** op de meegeleverde Context.
+        
+        Analyseer welke partijen de stelling het beste ondersteunen, gebaseerd **uitsluitend** op de meegeleverde Context.
         
         FORMATTING INSTRUCTIES:
         1. Begin met een algemene samenvatting (max 3 zinnen)
