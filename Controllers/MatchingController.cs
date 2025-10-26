@@ -56,12 +56,51 @@ public class MatchingController : ControllerBase
 
         string context = string.Join("\n\n--- Bron ---\n\n", relevantChunks);
         
+        // Limit context size to avoid token limits (system prompt is now much longer)
+        if (context.Length > 8000)
+        {
+            context = context.Substring(0, 8000) + "\n\n[Context ingekort vanwege lengte...]";
+        }
+        
         string systemPrompt = $@"Je bent een 'Omgekeerde Stemwijzer' analist. Je taak is om de stelling van de gebruiker (User Query) te analyseren en deze te matchen met de meegeleverde manifestfragmenten (Context).
         Geef een heldere, objectieve samenvatting van welke partijen de stelling het beste ondersteunen, gebaseerd **uitsluitend** op de meegeleverde Context.
         
-        FORMAT:
-        Begin met een algemene samenvatting (max 3 zinnen).
-        Geef daarna per partij in de context aan: 'Partij X: Match: JA/NEE/Neutraal' en citeer de meest relevante zin uit de Context om je oordeel te onderbouwen. Gebruik de Partijnaam in je analyse.
+        FORMATTING INSTRUCTIES:
+        1. Begin met een algemene samenvatting (max 3 zinnen)
+        2. Gebruik duidelijke structuur met partijnamen in **vet**
+        3. Geef per partij: Match status (JA/NEE/NEUTRAAL) en citaat
+        4. Gebruik bullet points (•) voor overzichtelijkheid
+        5. Gebruik Nederlandse interpunctie en spelling
+
+        VOORBEELD FORMAT:
+        Op basis van de verkiezingsprogramma's zie ik verschillende standpunten over jouw stelling. Sommige partijen steunen dit volledig, anderen hebben voorbehoud.
+
+        • **VVD (Volkspartij voor Vrijheid en Democratie)**: Match: JA - ""Citaat uit verkiezingsprogramma""
+        • **PvdA (Partij van de Arbeid)**: Match: NEE - ""Tegengesteld standpunt uit programma""  
+        • **D66 (Democraten 66)**: Match: NEUTRAAL - ""Genuanceerd standpunt""
+
+        BELANGRIJKE INSTRUCTIE: Gebruik ALTIJD de correcte volledige partijnamen. Hier zijn de juiste Nederlandse politieke partijen en hun afkortingen:
+
+        - VVD = Volkspartij voor Vrijheid en Democratie
+        - PVV = Partij voor de Vrijheid  
+        - CDA = Christen-Democratisch Appèl
+        - D66 = Democraten 66
+        - GL = GroenLinks
+        - SP = Socialistische Partij
+        - PvdA = Partij van de Arbeid
+        - CU = ChristenUnie
+        - PvdD = Partij voor de Dieren
+        - 50PLUS = 50PLUS
+        - SGP = Staatkundig Gereformeerde Partij
+        - DENK = DENK
+        - FvD = Forum voor Democratie
+        - JA21 = JA21
+        - Volt = Volt Nederland
+        - BBB = BoerBurgerBeweging
+        - NSC = Nieuw Sociaal Contract
+        - BVNL = Belang van Nederland
+
+        Gebruik bij het noemen van partijen ALTIJD de correcte volledige naam of de juiste afkorting zoals hierboven aangegeven. Verzin NOOIT nieuwe betekenissen voor afkortingen.
         ";
 
         string userMessage = $"User Query: {userQuery}\n\nContext:\n{context}";

@@ -279,3 +279,9 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2025-10-26 14:02:28.758 +01:00 [INF] Executed action OmgekeerdeStemWijzer.Api.Controllers.ChatController.SendMessage (OmgekeerdeStemWijzer.Api) in 3216.259ms
 2025-10-26 14:02:28.759 +01:00 [INF] Executed endpoint 'OmgekeerdeStemWijzer.Api.Controllers.ChatController.SendMessage (OmgekeerdeStemWijzer.Api)'
 2025-10-26 14:02:28.760 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/chat - 200 null application/json; charset=utf-8 3248.6518ms
+2025-10-26 14:13:36.058 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/api/chat - null null
+2025-10-26 14:13:36.061 +01:00 [INF] Executing endpoint '405 HTTP Method Not Supported'
+2025-10-26 14:13:36.062 +01:00 [INF] Executed endpoint '405 HTTP Method Not Supported'
+2025-10-26 14:13:36.063 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/api/chat - 405 0 null 5.5437ms
+2025-10-26 14:24:37.305 +01:00 [INF] Application is shutting down...
+2025-10-26 14:24:37.312 +01:00 [INF] Application shut down gracefully
