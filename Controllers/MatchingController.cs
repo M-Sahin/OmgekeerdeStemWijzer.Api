@@ -9,13 +9,15 @@ using System.ComponentModel.DataAnnotations;
 [Route("api/[controller]")]
 public class MatchingController : ControllerBase
 {
+    private const string CollectionName = "verkiezingsprogrammas";
+    
     private readonly EmbeddingService _embeddingService;
-    private readonly VectorStoreService _vectorStoreService;
+    private readonly IVectorStoreService _vectorStoreService;
     private readonly GroqService _groqService;
 
     public MatchingController(
         EmbeddingService embeddingService,
-        VectorStoreService vectorStoreService,
+        IVectorStoreService vectorStoreService,
         GroqService groqService)
     {
         _embeddingService = embeddingService;
@@ -45,7 +47,7 @@ public class MatchingController : ControllerBase
             return StatusCode(503, "Kon geen embedding genereren. Controleer OpenAI API service.");
         }
 
-        string[] relevantChunks = await _vectorStoreService.QueryRelevantChunksAsync(queryEmbedding, nResults: 5);
+        string[] relevantChunks = await _vectorStoreService.QueryRelevantChunksAsync(CollectionName, queryEmbedding, nResults: 5);
 
         if (relevantChunks.Length == 0)
         {

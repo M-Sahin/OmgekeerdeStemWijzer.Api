@@ -6,9 +6,9 @@ namespace OmgekeerdeStemWijzer.Api.Services
 {
     public class VectorStoreHealthCheck : IHealthCheck
     {
-        private readonly VectorStoreService _vectorStore;
+        private readonly IVectorStoreService _vectorStore;
 
-        public VectorStoreHealthCheck(VectorStoreService vectorStore)
+        public VectorStoreHealthCheck(IVectorStoreService vectorStore)
         {
             _vectorStore = vectorStore;
         }
@@ -17,8 +17,9 @@ namespace OmgekeerdeStemWijzer.Api.Services
         {
             try
             {
-                await _vectorStore.InitializeAsync(cancellationToken);
-                return HealthCheckResult.Healthy("Vector store initialized");
+                // Test connectivity by trying to get a collection (creates if not exists)
+                await _vectorStore.GetOrCreateCollectionAsync("health-check");
+                return HealthCheckResult.Healthy("Vector store connection successful");
             }
             catch (System.Exception ex)
             {
