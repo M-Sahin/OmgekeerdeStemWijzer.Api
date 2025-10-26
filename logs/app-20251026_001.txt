@@ -215,3 +215,67 @@ DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
 2025-10-26 13:28:51.161 +01:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
 2025-10-26 13:29:00.868 +01:00 [INF] Application is shutting down...
 2025-10-26 13:29:00.876 +01:00 [INF] Application shut down gracefully
+2025-10-26 13:59:50.379 +01:00 [INF] Starting OmgekeerdeStemWijzer API
+2025-10-26 13:59:50.595 +01:00 [INF] User profile is available. Using 'C:\Users\Msahi\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-26 13:59:50.669 +01:00 [INF] Now listening on: http://localhost:5295
+2025-10-26 13:59:50.672 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-26 13:59:50.673 +01:00 [INF] Hosting environment: Development
+2025-10-26 13:59:50.673 +01:00 [INF] Content root path: C:\Users\Msahi\OneDrive\Documenten\OmgekeerdeStemWijzer\OmgekeerdeStemWijzer.Api
+2025-10-26 13:59:54.521 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/ - null null
+2025-10-26 13:59:54.559 +01:00 [WRN] Failed to determine the https port for redirect.
+2025-10-26 13:59:54.599 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/ - 404 0 null 79.0198ms
+2025-10-26 13:59:54.618 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295/, Response status code: 404
+2025-10-26 14:00:02.284 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/ - null null
+2025-10-26 14:00:02.291 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/ - 404 0 null 8.0404ms
+2025-10-26 14:00:02.293 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295/, Response status code: 404
+2025-10-26 14:00:07.482 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - null null
+2025-10-26 14:00:07.598 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 116.7333ms
+2025-10-26 14:01:28.455 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5295//health - null null
+2025-10-26 14:01:28.458 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:01:28.461 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5295//health - 204 null null 5.6974ms
+2025-10-26 14:01:28.464 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295//health - application/json null
+2025-10-26 14:01:28.466 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:01:28.470 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295//health - 404 0 null 5.7982ms
+2025-10-26 14:01:28.472 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295//health, Response status code: 404
+2025-10-26 14:01:31.649 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5295//health - application/json null
+2025-10-26 14:01:31.652 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:01:31.653 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5295//health - 404 0 null 4.8747ms
+2025-10-26 14:01:31.657 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5295//health, Response status code: 404
+2025-10-26 14:01:44.291 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5295//api/chat - null null
+2025-10-26 14:01:44.292 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:01:44.293 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5295//api/chat - 204 null null 2.4181ms
+2025-10-26 14:01:44.296 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295//api/chat - application/json 73
+2025-10-26 14:01:44.297 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:01:44.769 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295//api/chat - 404 0 null 473.5774ms
+2025-10-26 14:01:44.771 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: POST http://localhost:5295//api/chat, Response status code: 404
+2025-10-26 14:02:25.504 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5295/api/chat - null null
+2025-10-26 14:02:25.507 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:02:25.508 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5295/api/chat - 204 null null 4.1685ms
+2025-10-26 14:02:25.511 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5295/api/chat - application/json 77
+2025-10-26 14:02:25.514 +01:00 [INF] CORS policy execution successful.
+2025-10-26 14:02:25.519 +01:00 [INF] Executing endpoint 'OmgekeerdeStemWijzer.Api.Controllers.ChatController.SendMessage (OmgekeerdeStemWijzer.Api)'
+2025-10-26 14:02:25.536 +01:00 [INF] Route matched with {action = "SendMessage", controller = "Chat"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SendMessage(OmgekeerdeStemWijzer.Api.Models.ChatRequest) on controller OmgekeerdeStemWijzer.Api.Controllers.ChatController (OmgekeerdeStemWijzer.Api).
+2025-10-26 14:02:26.548 +01:00 [INF] Initialized EmbeddingService with model: text-embedding-3-small
+2025-10-26 14:02:26.553 +01:00 [INF] Initialized GroqService with default model: llama-3.1-8b-instant
+2025-10-26 14:02:27.490 +01:00 [INF] Start processing HTTP request POST https://api.openai.com/v1/embeddings
+2025-10-26 14:02:27.494 +01:00 [INF] Sending HTTP request POST https://api.openai.com/v1/embeddings
+2025-10-26 14:02:27.853 +01:00 [INF] Received HTTP response headers after 356.2129ms - 200
+2025-10-26 14:02:27.855 +01:00 [INF] End processing HTTP request after 367.3747ms - 200
+2025-10-26 14:02:27.893 +01:00 [INF] Start processing HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections
+2025-10-26 14:02:27.893 +01:00 [INF] Sending HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections
+2025-10-26 14:02:28.142 +01:00 [INF] Received HTTP response headers after 247.3246ms - 200
+2025-10-26 14:02:28.142 +01:00 [INF] End processing HTTP request after 249.8564ms - 200
+2025-10-26 14:02:28.151 +01:00 [INF] Start processing HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections/1b5638fe-2610-462f-92ab-60c1b8378eb8/query
+2025-10-26 14:02:28.153 +01:00 [INF] Sending HTTP request POST https://omgekeerdestemwijzer-chromadb.onrender.com/api/v2/tenants/default_tenant/databases/default_database/collections/1b5638fe-2610-462f-92ab-60c1b8378eb8/query
+2025-10-26 14:02:28.293 +01:00 [INF] Received HTTP response headers after 139.1803ms - 200
+2025-10-26 14:02:28.295 +01:00 [INF] End processing HTTP request after 143.597ms - 200
+2025-10-26 14:02:28.302 +01:00 [INF] Start processing HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-26 14:02:28.308 +01:00 [INF] Sending HTTP request POST https://api.groq.com/openai/v1/chat/completions
+2025-10-26 14:02:28.543 +01:00 [INF] Received HTTP response headers after 233.9608ms - 401
+2025-10-26 14:02:28.545 +01:00 [INF] End processing HTTP request after 243.4842ms - 401
+2025-10-26 14:02:28.547 +01:00 [ERR] Groq API error 401: {"error":{"message":"Invalid API Key","type":"invalid_request_error","code":"invalid_api_key"}}
+
+2025-10-26 14:02:28.747 +01:00 [INF] Executing OkObjectResult, writing value of type 'OmgekeerdeStemWijzer.Api.Models.ChatMessage'.
+2025-10-26 14:02:28.758 +01:00 [INF] Executed action OmgekeerdeStemWijzer.Api.Controllers.ChatController.SendMessage (OmgekeerdeStemWijzer.Api) in 3216.259ms
+2025-10-26 14:02:28.759 +01:00 [INF] Executed endpoint 'OmgekeerdeStemWijzer.Api.Controllers.ChatController.SendMessage (OmgekeerdeStemWijzer.Api)'
+2025-10-26 14:02:28.760 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5295/api/chat - 200 null application/json; charset=utf-8 3248.6518ms
