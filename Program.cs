@@ -10,6 +10,9 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Google.Cloud.Firestore;
 
 // Configure Serilog before building the app
 Log.Logger = new LoggerConfiguration()
@@ -114,6 +117,38 @@ var chromaClientBuilder = builder.Services.AddHttpClient<IChromaClient, ChromaHt
     }
 });
 
+// --- Firebase JwtBearer authentication (validate Firebase ID tokens) ---
+var firebaseProjectId = builder.Configuration["Firebase:ProjectId"]
+    ?? builder.Configuration["Google:ProjectId"]
+    ?? Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
+
+if (!string.IsNullOrWhiteSpace(firebaseProjectId))
+{
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.Authority = $"https://securetoken.google.com/{firebaseProjectId}";
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = $"https://securetoken.google.com/{firebaseProjectId}",
+                ValidateAudience = true,
+                ValidAudience = firebaseProjectId,
+                ValidateLifetime = true
+            };
+        });
+}
+
+// --- Firestore ---
+var gcpProjectId = builder.Configuration["Google:ProjectId"]
+    ?? Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
+if (!string.IsNullOrWhiteSpace(gcpProjectId))
+{
+    builder.Services.AddSingleton(sp => FirestoreDb.Create(gcpProjectId));
+}
+
+builder.Services.AddTransient<IChatHistoryService, ChatHistoryService>();
+
 builder.Services.AddSingleton<VectorStoreService>();
 
 builder.Services.AddHostedService<StartupInitializer>();
@@ -154,6 +189,8 @@ if (app.Environment.IsDevelopment() || enableSwaggerInProd)
 
 app.UseHttpsRedirection();
 
+// Enable auth if configured
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
